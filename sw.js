@@ -1,5 +1,5 @@
-const CACHE = 'expense-v5';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './mascot.png', './piggy.png',
+const CACHE = 'expense-v6';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './face-tang.png', './face-ai.png', './piggy.png',
   './icons/cat/bill.png',
   './icons/cat/food.png',
   './icons/cat/health.png',
