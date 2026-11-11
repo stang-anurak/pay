@@ -151,7 +151,7 @@ const OPTS={
  health:O('health','medicine,💊,ค่ายา|hospital,🏥,โรงพยาบาล/พบแพทย์|clinic,🩺,คลินิก/ตรวจสุขภาพ|dental,🦷,ทำฟัน|vitamin,🍊,วิตามิน/อาหารเสริม|glasses,👓,แว่นตา/คอนแทคเลนส์|gym,🏋️,ฟิตเนส|sport,⚽,ค่าสนาม/อุปกรณ์กีฬา|massage,💆,นวด/สปา|mask,😷,หน้ากาก/ชุดตรวจ ATK'),
  other:O('other','merit,🙏,ทำบุญ/บริจาค|family,👨‍👩‍👧,ให้เงินครอบครัว|envelope,💌,ซองงานแต่ง/งานบุญ|friends,🍻,เลี้ยงสังสรรค์|trip,🏖️,ท่องเที่ยว|movie,🎬,ดูหนัง/คอนเสิร์ต|game,🎮,เติมเกม/ซื้อเกม|pet,🐶,สัตว์เลี้ยง/สัตวแพทย์|hair,💇,ตัดผม/ทำผม|laundry,🧺,ซักรีด|post,📮,ไปรษณีย์/ส่งพัสดุ|bank,🏦,ค่าธรรมเนียมธนาคาร')
 };
-const ic=(src,e)=>`<img src="${src}" alt="" onload="this.nextElementSibling.hidden=true" onerror="this.remove()"><em>${e}</em>`;
+const ic=(src,e)=>`<img src="${src}" alt="" onload="this.nextElementSibling.hidden=true;this.parentNode.style.background='none'" onerror="this.remove()"><em>${e}</em>`;
 const empty=t=>`<div class="empty"><img src="piggy.png" alt="" width="56" height="56"><br>${t}</div>`;
 const DAYS=['อา','จ','อ','พ','พฤ','ศ','ส'], DAYS_FULL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
 const $=s=>document.querySelector(s);
