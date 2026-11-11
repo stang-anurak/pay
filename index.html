@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>บันทึกรายจ่าย</title>
+  <title>รายจ่ายน้องตัง</title>
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#fff8e7">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="รายจ่าย">
+  <meta name="apple-mobile-web-app-title" content="รายจ่ายน้องตัง">
   <link rel="icon" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap">
   <style>
     :root { --ink:#3b3a33; --mute:#9a9484; --cream:#fff8e7; --line:#f0e8d2; --green:#2f9e7e; --peach:#ffb347;
-      --cute:'Mali','Sarabun',system-ui,sans-serif; font-family:system-ui,sans-serif; color:var(--ink); }
+      --cute:'Mali','Sarabun',system-ui,sans-serif; font-family:var(--cute); color:var(--ink); }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     body { margin:0; background:var(--cream); min-height:100vh;
       background-image:radial-gradient(circle at 90% 0,#ffe9a8 0,#ffe9a800 38%),radial-gradient(circle at 0 100%,#d9f2e6 0,#d9f2e600 35%); }
@@ -60,7 +60,7 @@
     .cats input:checked + label { border-color:var(--green); background:#e8f7f0; }
     .cats input:focus-visible + label { outline:3px solid #2f9e7e88; }
     .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .chips button { border:0; background:#fff3d0; border-radius:999px; padding:6px 12px; font:inherit; font-size:.85rem; color:var(--ink); }
+    .chips button { border:0; background:#fff3d0; border-radius:999px; padding:5px 12px 5px 6px; font:inherit; font-size:.85rem; color:var(--ink); display:inline-flex; align-items:center; gap:6px; }
     .chips small { color:var(--mute); }
     .go { border:0; border-radius:18px; padding:14px; font:700 1.05rem var(--cute); background:var(--green); color:#fff; width:100%; }
     #status { min-height:1.4em; margin:0; overflow-wrap:anywhere; text-align:center; font-size:.9rem; }
@@ -70,23 +70,41 @@
     nav div { max-width:480px; margin:auto; display:flex; gap:10px; }
     nav button { flex:1; border:0; border-radius:16px; padding:8px; background:none; font:600 .8rem var(--cute); color:var(--mute); display:grid; gap:2px; }
     nav button span { font-size:1.4rem; } nav button.on { background:#e8f7f0; color:var(--green); }
+  button,input,textarea,select{font-family:inherit}
+    .brand{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+    .brand h1{margin:0}.brand small{color:var(--mute)}
+    .brand img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 4px 12px #8a6d1d26;flex:none}
+    .ico,.oi{position:relative;overflow:hidden}
+    .ico img,.oi img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+    .ico em,.oi em{font-style:normal}
+    .oi{width:26px;height:26px;display:grid;place-items:center;font-size:1.1rem;flex:none}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+    .st{border-radius:20px;padding:12px 14px;border:1px solid var(--line);box-shadow:0 4px 14px #8a6d1d10}
+    .st:nth-child(1){background:#fff3d0}.st:nth-child(2){background:#fde8f1}.st:nth-child(3){background:#e3f2fc}
+    .st:nth-child(4){background:#e9e4fb}.st:nth-child(5){background:#e8f7f0}.st:nth-child(6){background:#fff}
+    .st .e{font-size:1.3rem}.st small{display:block;color:var(--mute)}
+    .st b{display:block;font:700 1.1rem var(--cute);margin:2px 0;overflow-wrap:anywhere}
+    .st span{font-size:.75rem;color:var(--mute)}
+    .st .up{color:#d9534f}.st .down{color:var(--green)}
+    .empty img{border-radius:50%}
   </style>
 </head>
 <body>
 <div class="wrap">
   <section id="p-home">
-    <h1>ภาพรวมรายจ่าย 🐣</h1>
+    <div class="brand"><img src="mascot.png" alt=""><div><h1>รายจ่ายน้องตัง</h1><small>ภาพรวมการใช้จ่าย</small></div></div>
     <div class="card">
       <div class="month"><button id="prev" aria-label="เดือนก่อน">‹</button><b id="month"></b><button id="next" aria-label="เดือนถัดไป">›</button></div>
       <div class="donut"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div>
       <div id="legend"></div>
     </div>
+    <div class="stats" id="stats"></div>
     <div class="card"><h2>7 วันล่าสุด 📊</h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
     <div class="card"><h2>รายการล่าสุด 🧾</h2><div id="recent"></div></div>
   </section>
 
   <section id="p-add" class="hide">
-    <h1>บันทึกรายจ่าย ✏️</h1>
+    <div class="brand"><img src="mascot.png" alt=""><div><h1>รายจ่ายน้องตัง</h1><small>จดรายการใหม่ ✏️</small></div></div>
     <form id="expense" class="card">
       <label class="f">จำนวนเงิน (บาท)
         <input class="amt" name="amount" type="text" inputmode="decimal" maxlength="12" pattern="[0-9]{1,9}([.][0-9]{1,2})?" placeholder="0.00" required>
@@ -109,8 +127,19 @@
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbxG7-Y-KrsgPg4t0mxhNrEChp9KempXeFAKDyaqiIHyMNXq_2eAlEORjB22tWS49MWhvQ/exec';
 const QUEUE_KEY='expense-queue', TOKEN_KEY='expense-token';
-const CATS={'อาหาร':['🍜','#ffb36b'],'เดินทาง':['🚌','#7cc4f0'],'ช้อปปิ้ง':['🛍️','#f59ac0'],
-  'ที่พักและบิล':['🏠','#b7a2f0'],'สุขภาพ':['💊','#7fd8a6'],'อื่น ๆ':['✨','#f2d36b']};
+const CATS={'อาหาร':['🍜','#ffb36b','food'],'เดินทาง':['🚌','#7cc4f0','travel'],'ช้อปปิ้ง':['🛍️','#f59ac0','shop'],
+  'ที่พักและบิล':['🏠','#b7a2f0','bill'],'สุขภาพ':['💊','#7fd8a6','health'],'อื่น ๆ':['✨','#f2d36b','other']};
+const O=(c,l)=>l.split('|').map(x=>{const [k,e,t]=x.split(',');return {k:c+'-'+k,e,t};});
+const OPTS={
+ food:O('food','rice,🍛,อาหารจานเดียว|noodle,🍜,ก๋วยเตี๋ยว|isan,🥗,ส้มตำ/อาหารอีสาน|curry,🍲,ต้ม/แกง/กับข้าว|bbq,🍖,ปิ้งย่าง/หมูกระทะ|fastfood,🍔,ฟาสต์ฟู้ด|japanese,🍣,ชาบู/อาหารญี่ปุ่น|delivery,🛵,สั่งเดลิเวอรี่|coffee,☕,กาแฟ|tea,🧋,ชานม/ชาไข่มุก|drink,🥤,น้ำ/เครื่องดื่ม|dessert,🍰,ขนม/ของหวาน|snack,🍿,ของกินเล่น|fruit,🍉,ผลไม้|market,🥬,ตลาด/วัตถุดิบ|alcohol,🍺,เบียร์/แอลกอฮอล์'),
+ travel:O('travel','fuel,⛽,น้ำมันรถ|toll,🛣️,ทางด่วน|parking,🅿️,ค่าจอดรถ|train,🚇,รถไฟฟ้า/MRT|bus,🚌,รถเมล์/รถตู้/รถทัวร์|moto,🏍️,วินมอเตอร์ไซค์|taxi,🚕,แท็กซี่/Grab|plane,✈️,เครื่องบิน|hotel,🏨,ที่พักระหว่างเดินทาง|repair,🔧,ซ่อมรถ/เปลี่ยนน้ำมันเครื่อง|tire,🔋,ยาง/แบตเตอรี่|wash,🚿,ล้างรถ|insurance,📄,ภาษีรถ/พ.ร.บ./ประกันรถ'),
+ shop:O('shop','clothes,👕,เสื้อผ้า|shoes,👟,รองเท้า|bag,👜,กระเป๋า/เครื่องประดับ|beauty,💄,เครื่องสำอาง/สกินแคร์|daily,🧴,ของใช้ส่วนตัว|home,🧹,ของใช้ในบ้าน|gadget,🎧,แกดเจ็ต/อิเล็กทรอนิกส์|appliance,🔌,เครื่องใช้ไฟฟ้า|furniture,🛋️,เฟอร์นิเจอร์/ของแต่งบ้าน|toy,🧸,ของเล่น/โมเดล|book,📚,หนังสือ/เครื่องเขียน|gift,🎁,ของขวัญ|online,📦,ช้อปออนไลน์|pet,🐾,ของใช้สัตว์เลี้ยง'),
+ bill:O('bill','rent,🏠,ค่าเช่า/ค่าผ่อนบ้าน|electric,💡,ค่าไฟ|water,🚰,ค่าน้ำ|wifi,📶,ค่าอินเทอร์เน็ต|phone,📱,ค่าโทรศัพท์/เติมเงิน|common,🏢,ค่าส่วนกลาง|gas,🔥,ค่าแก๊ส|credit,💳,บัตรเครดิต/ผ่อนชำระ|subscription,📺,สมัครสมาชิกรายเดือน|insurance,🛡️,ประกันชีวิต/ประกันภัย|repair,🔨,ซ่อมแซมบ้าน/ช่าง|edu,🎓,ค่าเทอม/คอร์สเรียน|tax,🧾,ภาษี/ค่าธรรมเนียม'),
+ health:O('health','medicine,💊,ค่ายา|hospital,🏥,โรงพยาบาล/พบแพทย์|clinic,🩺,คลินิก/ตรวจสุขภาพ|dental,🦷,ทำฟัน|vitamin,🍊,วิตามิน/อาหารเสริม|glasses,👓,แว่นตา/คอนแทคเลนส์|gym,🏋️,ฟิตเนส|sport,⚽,ค่าสนาม/อุปกรณ์กีฬา|massage,💆,นวด/สปา|mask,😷,หน้ากาก/ชุดตรวจ ATK'),
+ other:O('other','merit,🙏,ทำบุญ/บริจาค|family,👨‍👩‍👧,ให้เงินครอบครัว|envelope,💌,ซองงานแต่ง/งานบุญ|friends,🍻,เลี้ยงสังสรรค์|trip,🏖️,ท่องเที่ยว|movie,🎬,ดูหนัง/คอนเสิร์ต|game,🎮,เติมเกม/ซื้อเกม|pet,🐶,สัตว์เลี้ยง/สัตวแพทย์|hair,💇,ตัดผม/ทำผม|laundry,🧺,ซักรีด|post,📮,ไปรษณีย์/ส่งพัสดุ|bank,🏦,ค่าธรรมเนียมธนาคาร')
+};
+const ic=(src,e)=>`<img src="${src}" alt="" onload="this.nextElementSibling.hidden=true" onerror="this.remove()"><em>${e}</em>`;
+const empty=t=>`<div class="empty"><img src="piggy.png" alt="" width="84" height="84"><br>${t}</div>`;
 const DAYS=['อา','จ','อ','พ','พฤ','ศ','ส'], DAYS_FULL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -118,7 +147,7 @@ const baht=n=>'฿'+n.toLocaleString('th-TH',{maximumFractionDigits:2});
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const ymd=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
-const icoOf=c=>CATS[c]||['✨','#f2d36b'];
+const icoOf=c=>CATS[c]||['✨','#f2d36b','other'];
 const form=$('#expense'), status=$('#status');
 let rows=load('expense-rows',[]), descs=load('expense-desc',{}), monthOff=0, flushing=false;
 
@@ -171,14 +200,14 @@ function render(){
   const by={}; let total=0;
   all.filter(r=>r.date.startsWith(key)).forEach(r=>{by[r.category]=(by[r.category]||0)+r.amount; total+=r.amount;});
   const ents=Object.entries(by).sort((a,b)=>b[1]-a[1]);
-  $('#total').textContent=baht(total);
+  $('#total').textContent=baht(total); renderStats(all,m,key,total,ents);
   let off=25, segs='<circle r="15.9155" cx="21" cy="21" fill="none" stroke="#f6efdb" stroke-width="6"/>';
   ents.forEach(([c,a])=>{ const p=a/total*100, len=Math.max(p-(ents.length>1?.8:0),.1);
     segs+=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${icoOf(c)[1]}" stroke-width="6" stroke-dasharray="${len} ${100-len}" stroke-dashoffset="${off}"/>`; off-=p; });
   $('#donut').innerHTML=segs;
-  $('#legend').innerHTML=ents.length?ents.map(([c,a])=>`<div class="leg"><div class="ico" style="background:${icoOf(c)[1]}55">${icoOf(c)[0]}</div>
+  $('#legend').innerHTML=ents.length?ents.map(([c,a])=>`<div class="leg"><div class="ico" style="background:${icoOf(c)[1]}55">${ic('icons/cat/'+icoOf(c)[2]+'.png',icoOf(c)[0])}</div>
     <div class="n">${esc(c)}<small>${Math.round(a/total*100)}%</small></div><div class="a">${baht(a)}</div></div>`).join('')
-    :'<p class="empty">ยังไม่มีรายการในเดือนนี้</p>';
+    :empty('ยังไม่มีรายการในเดือนนี้');
   const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return ymd(d);});
   const sums=days.map(d=>all.filter(r=>r.date===d).reduce((s,r)=>s+r.amount,0)), max=Math.max(...sums);
   $('#bars').innerHTML=days.map((d,i)=>{ const s=sums[i], top=max>0&&s===max, dow=new Date(d+'T00:00:00').getDay();
@@ -186,21 +215,47 @@ function render(){
   const ti=sums.indexOf(max);
   $('#tip').textContent=max>0?`🏆 วัน${DAYS_FULL[new Date(days[ti]+'T00:00:00').getDay()]}ที่ ${+days[ti].slice(8)} ใช้เยอะสุด ${baht(max)}`:'7 วันนี้ยังไม่มีรายจ่าย';
   const rec=[...all].reverse().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
-  $('#recent').innerHTML=rec.length?rec.map(r=>`<div class="leg"><div class="ico" style="background:${icoOf(r.category)[1]}55">${icoOf(r.category)[0]}</div>
+  $('#recent').innerHTML=rec.length?rec.map(r=>`<div class="leg"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div>
     <div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join('')
-    :'<p class="empty">ยังไม่มีรายการ</p>';
+    :empty('ยังไม่มีรายการ');
+}
+function renderStats(all,m,key,total,ents){
+  const mr=all.filter(r=>r.date.startsWith(key)), now=new Date();
+  const dim=new Date(m.getFullYear(),m.getMonth()+1,0).getDate(), days=monthOff===0?now.getDate():dim;
+  const pkey=ymd(new Date(m.getFullYear(),m.getMonth()-1,1)).slice(0,7);
+  const prev=all.filter(r=>r.date.startsWith(pkey)&&+r.date.slice(8)<=days).reduce((a,r)=>a+r.amount,0);
+  const dm=d=>`${+d.slice(8)}/${+d.slice(5,7)}`;
+  const top=mr.reduce((a,r)=>!a||r.amount>a.amount?r:a,null);
+  const byDay={}; mr.forEach(r=>byDay[r.date]=(byDay[r.date]||0)+r.amount);
+  const td=Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
+  let cmp='–',csub='ไม่มีข้อมูลเดือนก่อน',cc='';
+  if(prev>0&&mr.length){const p=(total-prev)/prev*100; cmp=(p>0?'+':'')+Math.round(p)+'%'; csub=p>0?'ใช้มากกว่าเดือนก่อน':'ใช้น้อยกว่าหรือเท่าเดือนก่อน'; cc=p>0?'up':'down';}
+  const no='ยังไม่มีข้อมูล';
+  const cards=[
+    ['💸','เฉลี่ย/วัน',baht(total/days),monthOff===0?`จาก ${days} วันแล้ว`:`ทั้งเดือน ${days} วัน`,''],
+    ['🔥','ใช้สูงสุด (รายการ)',top?baht(top.amount):'–',top?`${top.description||top.category} · ${dm(top.date)}`:no,''],
+    ['📅','วันที่ใช้เยอะสุด',td?dm(td[0]):'–',td?baht(td[1]):no,''],
+    ['🏅','หมวดที่ใช้มากสุด',ents[0]?`${icoOf(ents[0][0])[0]} ${ents[0][0]}`:'–',ents[0]?`${Math.round(ents[0][1]/total*100)}% ของเดือน`:no,''],
+    ['🧾','จำนวนรายการ',mr.length+' รายการ',mr.length?`เฉลี่ยครั้งละ ${baht(total/mr.length)}`:no,''],
+    ['📈','เทียบเดือนก่อน',cmp,csub,cc]];
+  $('#stats').innerHTML=cards.map(([e,l,v,s,c])=>`<div class="st"><div class="e">${e}</div><small>${l}</small><b class="${c}">${esc(v)}</b><span>${esc(s)}</span></div>`).join('');
 }
 $('#prev').onclick=()=>{monthOff--;render();}; $('#next').onclick=()=>{monthOff++;render();};
 
 /* ---------- Entry ---------- */
-$('#cats').innerHTML=Object.entries(CATS).map(([c,[e,col]],i)=>`<input type="radio" name="category" id="c${i}" value="${esc(c)}" required>
-  <label for="c${i}"><span class="ico" style="background:${col}55">${e}</span>${esc(c)}</label>`).join('');
+$('#cats').innerHTML=Object.entries(CATS).map(([c,[e,col,k]],i)=>`<input type="radio" name="category" id="c${i}" value="${esc(c)}" required>
+  <label for="c${i}"><span class="ico" style="background:${col}55">${ic('icons/cat/'+k+'.png',e)}</span>${esc(c)}</label>`).join('');
+function chipList(c){ const base=OPTS[(CATS[c]||[])[2]]||[], names=new Set(base.map(o=>o.t));
+  return base.concat((descs[c]||[]).filter(t=>!names.has(t)).slice(0,8).map(t=>({t,k:'',e:'🕘'}))); }
 function renderChips(){
-  const c=form.elements.category.value, list=descs[c]||[];
-  $('#chips').innerHTML=!c?'<small>เลือกหมวดหมู่เพื่อดูรายละเอียดที่เคยบันทึก</small>':list.map((t,i)=>`<button type="button" data-i="${i}">${esc(t)}</button>`).join('');
+  const c=form.elements.category.value;
+  $('#chips').innerHTML=!c?'<small>เลือกหมวดหมู่เพื่อดูตัวเลือกรายละเอียด</small>':chipList(c).map(o=>`<button type="button" data-t="${esc(o.t)}"><span class="oi">${o.k?ic('icons/opt/'+o.k+'.png',o.e):`<em>${o.e}</em>`}</span>${esc(o.t)}</button>`).join('');
 }
 $('#chips').onclick=e=>{ const b=e.target.closest('button'); if(!b) return;
-  form.elements.description.value=(descs[form.elements.category.value]||[])[+b.dataset.i]||''; form.elements.description.focus(); };
+  const el=form.elements.description, cur=el.value.trim(), t=b.dataset.t;
+  const names=new Set(chipList(form.elements.category.value).map(o=>o.t));
+  if(!cur||names.has(cur)) el.value=t; else if(!cur.split(', ').includes(t)) el.value=cur+', '+t;
+  el.focus(); };
 $('#cats').addEventListener('change',renderChips);
 form.elements.date.value=ymd(new Date());
 form.addEventListener('submit',e=>{

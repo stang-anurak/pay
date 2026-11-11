@@ -1,0 +1,95 @@
+STYLE: cute 3D-sticker icon, soft glossy pastel, thick white outline, transparent background, 512x512 PNG, no text
+
+หมวดหมู่ -> icons/cat/<key>.png
+  food = อาหาร
+  travel = เดินทาง
+  shop = ช้อปปิ้ง
+  bill = ที่พักและบิล
+  health = สุขภาพ
+  other = อื่น ๆ
+
+รายละเอียด -> icons/opt/<key>.png
+[อาหาร]
+  food-rice = อาหารจานเดียว
+  food-noodle = ก๋วยเตี๋ยว
+  food-isan = ส้มตำ/อาหารอีสาน
+  food-curry = ต้ม/แกง/กับข้าว
+  food-bbq = ปิ้งย่าง/หมูกระทะ
+  food-fastfood = ฟาสต์ฟู้ด
+  food-japanese = ชาบู/อาหารญี่ปุ่น
+  food-delivery = สั่งเดลิเวอรี่
+  food-coffee = กาแฟ
+  food-tea = ชานม/ชาไข่มุก
+  food-drink = น้ำ/เครื่องดื่ม
+  food-dessert = ขนม/ของหวาน
+  food-snack = ของกินเล่น
+  food-fruit = ผลไม้
+  food-market = ตลาด/วัตถุดิบ
+  food-alcohol = เบียร์/แอลกอฮอล์
+[เดินทาง]
+  travel-fuel = น้ำมันรถ
+  travel-toll = ทางด่วน
+  travel-parking = ค่าจอดรถ
+  travel-train = รถไฟฟ้า/MRT
+  travel-bus = รถเมล์/รถตู้/รถทัวร์
+  travel-moto = วินมอเตอร์ไซค์
+  travel-taxi = แท็กซี่/Grab
+  travel-plane = เครื่องบิน
+  travel-hotel = ที่พักระหว่างเดินทาง
+  travel-repair = ซ่อมรถ/เปลี่ยนน้ำมันเครื่อง
+  travel-tire = ยาง/แบตเตอรี่
+  travel-wash = ล้างรถ
+  travel-insurance = ภาษีรถ/พ.ร.บ./ประกันรถ
+[ช้อปปิ้ง]
+  shop-clothes = เสื้อผ้า
+  shop-shoes = รองเท้า
+  shop-bag = กระเป๋า/เครื่องประดับ
+  shop-beauty = เครื่องสำอาง/สกินแคร์
+  shop-daily = ของใช้ส่วนตัว
+  shop-home = ของใช้ในบ้าน
+  shop-gadget = แกดเจ็ต/อิเล็กทรอนิกส์
+  shop-appliance = เครื่องใช้ไฟฟ้า
+  shop-furniture = เฟอร์นิเจอร์/ของแต่งบ้าน
+  shop-toy = ของเล่น/โมเดล
+  shop-book = หนังสือ/เครื่องเขียน
+  shop-gift = ของขวัญ
+  shop-online = ช้อปออนไลน์
+  shop-pet = ของใช้สัตว์เลี้ยง
+[ที่พักและบิล]
+  bill-rent = ค่าเช่า/ค่าผ่อนบ้าน
+  bill-electric = ค่าไฟ
+  bill-water = ค่าน้ำ
+  bill-wifi = ค่าอินเทอร์เน็ต
+  bill-phone = ค่าโทรศัพท์/เติมเงิน
+  bill-common = ค่าส่วนกลาง
+  bill-gas = ค่าแก๊ส
+  bill-credit = บัตรเครดิต/ผ่อนชำระ
+  bill-subscription = สมัครสมาชิกรายเดือน
+  bill-insurance = ประกันชีวิต/ประกันภัย
+  bill-repair = ซ่อมแซมบ้าน/ช่าง
+  bill-edu = ค่าเทอม/คอร์สเรียน
+  bill-tax = ภาษี/ค่าธรรมเนียม
+[สุขภาพ]
+  health-medicine = ค่ายา
+  health-hospital = โรงพยาบาล/พบแพทย์
+  health-clinic = คลินิก/ตรวจสุขภาพ
+  health-dental = ทำฟัน
+  health-vitamin = วิตามิน/อาหารเสริม
+  health-glasses = แว่นตา/คอนแทคเลนส์
+  health-gym = ฟิตเนส
+  health-sport = ค่าสนาม/อุปกรณ์กีฬา
+  health-massage = นวด/สปา
+  health-mask = หน้ากาก/ชุดตรวจ ATK
+[อื่น ๆ]
+  other-merit = ทำบุญ/บริจาค
+  other-family = ให้เงินครอบครัว
+  other-envelope = ซองงานแต่ง/งานบุญ
+  other-friends = เลี้ยงสังสรรค์
+  other-trip = ท่องเที่ยว
+  other-movie = ดูหนัง/คอนเสิร์ต
+  other-game = เติมเกม/ซื้อเกม
+  other-pet = สัตว์เลี้ยง/สัตวแพทย์
+  other-hair = ตัดผม/ทำผม
+  other-laundry = ซักรีด
+  other-post = ไปรษณีย์/ส่งพัสดุ
+  other-bank = ค่าธรรมเนียมธนาคาร

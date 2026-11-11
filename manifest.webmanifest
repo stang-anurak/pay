@@ -1,16 +1,25 @@
 {
-  "name": "บันทึกรายจ่าย",
-  "short_name": "รายจ่าย",
+  "name": "รายจ่ายน้องตัง",
+  "short_name": "รายจ่ายน้องตัง",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "lang": "th",
-  "theme_color": "#155b46",
-  "background_color": "#edf4ef",
+  "theme_color": "#fff8e7",
+  "background_color": "#fff8e7",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
   ]
 }
