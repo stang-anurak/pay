@@ -133,11 +133,24 @@
     .pick{flex:1;max-width:190px;border:3px solid #f0e8d2;background:#fffdf7;border-radius:28px;padding:14px 12px 12px;display:grid;justify-items:center;gap:8px;font:700 1.1rem var(--cute);color:#3b3a33;box-shadow:0 8px 24px #8a6d1d18}
     .pick.ai{border-color:#f7dce6;background:#fffafc}
     .pick img{width:100%;aspect-ratio:1;border-radius:50%;object-fit:cover}
+    #chromeBar{position:fixed;top:0;left:0;right:0;z-index:15;display:flex;align-items:center;gap:8px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));background:#fff;border-bottom:1px solid var(--line);box-shadow:0 4px 14px #8a6d1d22;font-size:.8rem}
+    #chromeBar span{flex:1;min-width:0}
+    #chromeBar a{flex:none;background:var(--green);color:#fff;text-decoration:none;font-weight:700;border-radius:999px;padding:6px 14px}
+    #chromeBar button{flex:none;border:0;background:none;font-size:1rem;color:var(--mute);padding:4px 6px}
+    .petbtn{margin-left:auto;align-self:center;height:52px;flex:none;border:0;background:none;padding:0;line-height:0}
+    .brand .petbtn img{width:auto;height:100%;max-width:96px;border:0;border-radius:0;box-shadow:none;object-fit:contain;filter:drop-shadow(0 3px 5px #8a6d1d30)}
+    .petbtn.hop img{animation:hop .5s ease}
+    @keyframes hop{30%{transform:translateY(-8px) rotate(-6deg)}60%{transform:translateY(0) rotate(4deg)}100%{transform:none}}
+    @media (prefers-reduced-motion:reduce){.petbtn.hop img{animation:none}}
+    .pet{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+    .pet img{max-width:78%;max-height:100%;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 4px 8px #8a6d1d26)}
+    .pet.tiny img{visibility:hidden}
+    .whopet{height:min(20vh,150px);width:auto;margin-top:14px;filter:drop-shadow(0 4px 8px #8a6d1d26)}
   </style>
 </head>
 <body>
 <div id="app">
-  <header class="brand"><button type="button" id="swap" class="swap" aria-label="เปลี่ยนผู้ใช้"><img id="face" src="face-tang.png" alt=""></button><div><h1 id="ttl">รายจ่ายน้องตัง</h1><small id="sub">ภาพรวมการใช้จ่าย</small></div></header>
+  <header class="brand"><button type="button" id="swap" class="swap" aria-label="เปลี่ยนผู้ใช้"><img id="face" src="face-tang.png" alt=""></button><div><h1 id="ttl">รายจ่ายน้องตัง</h1><small id="sub">ภาพรวมการใช้จ่าย</small></div><button type="button" id="petBtn" class="petbtn" aria-label="เปลี่ยนน้องแมว"><img id="petImg" alt="" onerror="this.remove()"></button></header>
   <main>
     <section id="p-home" class="pg">
       <div class="month"><button id="prev" aria-label="เดือนก่อน">‹</button><b id="month"></b><button id="next" aria-label="เดือนถัดไป">›</button></div>
@@ -156,6 +169,7 @@
           <textarea name="description" maxlength="300" rows="2"></textarea>
           <div class="chips" id="chips"></div>
         </div>
+        <div class="pet tiny" id="petAdd" aria-hidden="true"><img alt="" onerror="this.remove()"></div>
         <button class="go" type="submit">บันทึกรายจ่าย</button>
         <p id="status" role="status"></p>
       </form>
@@ -189,7 +203,27 @@
   <div class="row">
     <button class="pick" data-u="tang"><img src="face-tang.png" alt="">น้องตัง</button>
     <button class="pick ai" data-u="ai"><img src="face-ai.png" alt="">พี่อาย</button>
-  </div></div>
+  </div><img id="whoPet" class="whopet" alt="" onerror="this.remove()"></div>
+<script>
+/* ถ้าเปิดลิงก์ในเบราว์เซอร์ของแอปอื่น (LINE/Facebook/Instagram ฯลฯ) ให้พาไปเปิดใน Chrome */
+(function(){
+  const ua=navigator.userAgent, android=/Android/i.test(ua), ios=/iPhone|iPad|iPod/i.test(ua);
+  const line=/\bLine\//i.test(ua), inApp=line||/FBAN|FBAV|FB_IAB|Instagram|Messenger|MicroMessenger|TikTok|Twitter/i.test(ua);
+  if(!inApp||!(android||ios)) return;
+  // LINE: พารามิเตอร์นี้สั่งให้ LINE เปิดหน้านี้ในเบราว์เซอร์หลักของเครื่อง
+  if(line&&!/[?&]openExternalBrowser=1/.test(location.search)){
+    location.replace(location.pathname+(location.search?location.search+'&':'?')+'openExternalBrowser=1'+location.hash); return; }
+  const rest=location.host+location.pathname+location.search;
+  const chrome=android
+    ?`intent://${rest}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(location.href)};end`
+    :`googlechromes://${rest}`;
+  if(android&&!line) location.href=chrome;   // Android: ลองเด้งไป Chrome เลย
+  const b=document.createElement('div'); b.id='chromeBar';
+  b.innerHTML=`<span>เปิดใน Chrome จะใช้งานได้ดีกว่า</span><a href="${chrome}">เปิด Chrome</a><button type="button" aria-label="ปิด">✕</button>`;
+  b.querySelector('button').onclick=()=>b.remove();
+  document.body.appendChild(b);
+})();
+</script>
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbxG7-Y-KrsgPg4t0mxhNrEChp9KempXeFAKDyaqiIHyMNXq_2eAlEORjB22tWS49MWhvQ/exec';
 const QUEUE_KEY='expense-queue', TOKEN_KEY='expense-token';
@@ -205,7 +239,10 @@ const OPTS={
  other:O('other','merit,🙏,ทำบุญ/บริจาค|family,👨‍👩‍👧,ให้เงินครอบครัว|envelope,💌,ซองงานแต่ง/งานบุญ|friends,🍻,เลี้ยงสังสรรค์|trip,🏖️,ท่องเที่ยว|movie,🎬,ดูหนัง/คอนเสิร์ต|game,🎮,เติมเกม/ซื้อเกม|pet,🐶,สัตว์เลี้ยง/สัตวแพทย์|hair,💇,ตัดผม/ทำผม|laundry,🧺,ซักรีด|post,📮,ไปรษณีย์/ส่งพัสดุ|bank,🏦,ค่าธรรมเนียมธนาคาร')
 };
 const ic=(src,e)=>`<img src="${src}" alt="" onload="this.nextElementSibling.hidden=true;this.parentNode.style.background='none'" onerror="this.remove()"><em>${e}</em>`;
-const empty=t=>`<div class="empty"><img src="piggy.png" alt="" width="56" height="56"><br>${t}</div>`;
+const PETS=['box','tea','bake','yarn','plant','fish'].map(n=>`pets/cat-${n}.webp`);
+let petNow=Math.floor(Math.random()*PETS.length);
+const petAt=o=>PETS[(petNow+o)%PETS.length];
+const empty=t=>`<div class="empty"><img src="${petAt(1)}" alt="" style="height:76px;width:auto;border-radius:0" onerror="this.src='piggy.png';this.style.height='56px'"><br>${t}</div>`;
 const DAYS=['อา','จ','อ','พ','พฤ','ศ','ส'], DAYS_FULL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
 const DAY_COLORS=['#ff9f9f','#ffd966','#ffb8d6','#a9e3b5','#ffc48a','#a6d6f7','#cdb7f2']; /* อา แดง · จ เหลือง · อ ชมพู · พ เขียว · พฤ ส้ม · ศ ฟ้า · ส ม่วง */
 const $=s=>document.querySelector(s);
@@ -401,6 +438,7 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   $('#sub').textContent=SUBS[pg];
   if(document.activeElement) document.activeElement.blur();
   if(pg==='list') renderRecent();
+  if(pg==='add') $('#petAdd img').src=PETS[Math.floor(Math.random()*PETS.length)];
 });
 window.addEventListener('online',()=>{flush();refresh();});
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ readQueue().length?flush():refresh(); } });
@@ -417,6 +455,12 @@ function choose(u){
 document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>choose(b.dataset.u));
 $('#swap').onclick=()=>{ document.documentElement.dataset.theme='';
   document.querySelector('meta[name=theme-color]').content='#fff8e7'; $('#who').classList.remove('hide'); };
+/* ---------- น้องแมว ---------- */
+$('#petImg').src=petAt(0); $('#whoPet').src=petAt(2);
+$('#petBtn').onclick=()=>{ petNow=(petNow+1)%PETS.length; $('#petImg').src=petAt(0);
+  const b=$('#petBtn'); b.classList.remove('hop'); void b.offsetWidth; b.classList.add('hop'); };
+const fitPet=()=>{ const p=$('#petAdd'); p.classList.toggle('tiny',p.clientHeight<80); };
+if(window.ResizeObserver) new ResizeObserver(fitPet).observe($('#petAdd'));
 if(readQueue().length) flush();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
