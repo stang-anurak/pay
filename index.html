@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>บันทึกรายจ่าย</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#155b46">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="รายจ่าย">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #172e29; background: #edf4ef; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: clamp(16px, 6vw, 64px) 16px;
+      padding-top: max(clamp(16px, 6vw, 64px), env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    main { max-width: 480px; margin: auto; background: white; padding: clamp(20px, 5vw, 36px);
+      border: 1px solid #d4e2da; border-radius: 20px; box-shadow: 0 12px 36px #12352a12; }
+    h1 { margin: 0 0 24px; font-size: 1.8rem; }
+    form { display: grid; gap: 16px; }
+    label { display: grid; gap: 6px; font-weight: 600; }
+    input, select, textarea, button { width: 100%; min-width: 0; font: inherit;
+      padding: 12px; border-radius: 10px; }
+    input, select, textarea { border: 1px solid #9dafaa; background: #fcfdfc; color: inherit;
+      font-weight: 400; }
+    textarea { resize: vertical; }
+    button { border: 0; background: #155b46; color: white; font-weight: 700; cursor: pointer; }
+    :focus-visible { outline: 3px solid #318769; outline-offset: 2px; }
+    #status { margin: 12px 0 0; min-height: 1.5em; overflow-wrap: anywhere; }
+    #status[data-error="true"] { color: #a52c20; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>บันทึกรายจ่าย</h1>
+    <form id="expense">
+      <label>จำนวนเงิน (บาท)
+        <input name="amount" type="text" inputmode="decimal" maxlength="12"
+          pattern="[0-9]{1,9}([.][0-9]{1,2})?" placeholder="0.00" required>
+      </label>
+      <label>วันที่จ่าย
+        <input name="date" type="date" required>
+      </label>
+      <label>หมวดหมู่
+        <select name="category" required>
+          <option value="">เลือกหมวดหมู่</option>
+          <option>อาหาร</option>
+          <option>เดินทาง</option>
+          <option>ช้อปปิ้ง</option>
+          <option>ที่พักและบิล</option>
+          <option>สุขภาพ</option>
+          <option>อื่น ๆ</option>
+        </select>
+      </label>
+      <label>รายละเอียด (ไม่บังคับ)
+        <textarea name="description" maxlength="300" rows="2"></textarea>
+      </label>
+      <button type="submit">บันทึกรายจ่าย</button>
+    </form>
+    <p id="status" role="status"></p>
+  </main>
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxG7-Y-KrsgPg4t0mxhNrEChp9KempXeFAKDyaqiIHyMNXq_2eAlEORjB22tWS49MWhvQ/exec';
+    const QUEUE_KEY = 'expense-queue';
+    const TOKEN_KEY = 'expense-token';
+    const form = document.querySelector('#expense');
+    const status = document.querySelector('#status');
+    let flushing = false;
+
+    const localToday = () => {
+      const d = new Date();
+      return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    };
+    const readQueue = () => {
+      try { return JSON.parse(localStorage.getItem(QUEUE_KEY)) || []; } catch { return []; }
+    };
+    const writeQueue = q => localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+    function showStatus(message, isError = false) {
+      status.textContent = message;
+      status.dataset.error = String(isError);
+    }
+
+    form.elements.date.value = localToday();
+
+    async function flush() {
+      if (flushing) return;
+      flushing = true;
+      let lastError = '';
+      try {
+        let queue = readQueue();
+        while (queue.length) {
+          let token = localStorage.getItem(TOKEN_KEY);
+          if (!token) {
+            token = (prompt('ใส่รหัสเข้าใช้งาน (API_TOKEN จาก Apps Script)') || '').trim();
+            if (!token) { showStatus(`รอส่ง ${queue.length} รายการ — ยังไม่ได้ใส่รหัส`, true); return; }
+            localStorage.setItem(TOKEN_KEY, token);
+          }
+          let result;
+          try {
+            const res = await fetch(API_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ token, expense: queue[0] })
+            });
+            result = await res.json();
+          } catch {
+            showStatus(`ยังไม่มีสัญญาณ — รอส่ง ${queue.length} รายการ`);
+            return;
+          }
+          if (!result.ok && result.code === 'unauthorized') {
+            localStorage.removeItem(TOKEN_KEY);
+            showStatus(`${result.error} — แตะบันทึกอีกครั้งเพื่อใส่รหัสใหม่`, true);
+            return;
+          }
+          queue = queue.slice(1);
+          writeQueue(queue);
+          if (!result.ok) lastError = result.error || 'บันทึกไม่สำเร็จ';
+        }
+        if (lastError) showStatus(lastError, true);
+        else showStatus('บันทึกรายจ่ายแล้ว');
+      } finally {
+        flushing = false;
+      }
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const fields = Object.fromEntries(new FormData(form));
+      if (!(Number(fields.amount) > 0)) {
+        showStatus('กรุณากรอกจำนวนเงินมากกว่า 0 บาท', true);
+        form.elements.amount.focus();
+        return;
+      }
+      const queue = readQueue();
+      queue.push({ ...fields, id: crypto.randomUUID() });
+      writeQueue(queue);
+      const keepDate = fields.date;
+      form.reset();
+      form.elements.date.value = keepDate;
+      showStatus('กำลังส่ง…');
+      form.elements.amount.focus();
+      flush();
+    });
+
+    window.addEventListener('online', flush);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) flush(); });
+    if (readQueue().length) flush();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  </script>
+</body>
+</html>
