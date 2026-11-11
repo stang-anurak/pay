@@ -46,8 +46,11 @@
     .st small{color:var(--mute);font-size:.68rem}
     .st b{font:700 .95rem var(--cute);margin:1px 0}
     .st span{font-size:.62rem;color:var(--mute)}
-    .st .oi{display:inline-grid;width:22px;height:22px;font-size:.85rem;vertical-align:-6px;margin-right:2px;border-radius:0}
-    .st b .oi{width:20px;height:20px;vertical-align:-4px}
+    .st small .oi{display:inline-grid;width:26px;height:26px;font-size:.85rem;vertical-align:middle;margin:2px 3px 2px 0;border-radius:50%;background:#fff!important;box-shadow:0 1px 3px #8a6d1d33}
+    .st small .oi img{inset:3px;width:calc(100% - 6px);height:calc(100% - 6px)}
+    .st small{font-size:.64rem}
+    @media (max-width:380px){.st{padding:8px 8px}.st small{font-size:.6rem}.st small .oi{width:22px;height:22px;margin-right:2px}.st small .oi img{inset:2px;width:calc(100% - 4px);height:calc(100% - 4px)}}
+    .st b .oi{display:inline-grid;width:20px;height:20px;vertical-align:-4px;margin-right:2px;border-radius:0}
     .st .up{color:#d9534f}.st .down{color:var(--green)}
     .dwrap{position:relative;flex:none;width:clamp(124px,min(24vh,44vw),180px);width:clamp(124px,min(24dvh,44vw),180px);aspect-ratio:1}
     .dwrap svg{width:100%;height:100%}
@@ -204,7 +207,7 @@ const OPTS={
 const ic=(src,e)=>`<img src="${src}" alt="" onload="this.nextElementSibling.hidden=true;this.parentNode.style.background='none'" onerror="this.remove()"><em>${e}</em>`;
 const empty=t=>`<div class="empty"><img src="piggy.png" alt="" width="56" height="56"><br>${t}</div>`;
 const DAYS=['อา','จ','อ','พ','พฤ','ศ','ส'], DAYS_FULL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
-const DAY_COLORS=['#ff9f9f','#ffe38a','#ffb8d6','#a9e3b5','#ffc48a','#a6d6f7','#cdb7f2']; /* อา แดง · จ เหลือง · อ ชมพู · พ เขียว · พฤ ส้ม · ศ ฟ้า · ส ม่วง */
+const DAY_COLORS=['#ff9f9f','#ffd966','#ffb8d6','#a9e3b5','#ffc48a','#a6d6f7','#cdb7f2']; /* อา แดง · จ เหลือง · อ ชมพู · พ เขียว · พฤ ส้ม · ศ ฟ้า · ส ม่วง */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const baht=n=>'฿'+n.toLocaleString('th-TH',{maximumFractionDigits:2});
