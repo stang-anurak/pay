@@ -14,116 +14,129 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap">
   <style>
-    :root { --ink:#3b3a33; --mute:#9a9484; --cream:#fff8e7; --line:#f0e8d2; --green:#2f9e7e; --peach:#ffb347;
-      --cute:'Mali','Sarabun',system-ui,sans-serif; font-family:var(--cute); color:var(--ink); }
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body { margin:0; background:var(--cream); min-height:100vh;
-      background-image:radial-gradient(circle at 90% 0,#ffe9a8 0,#ffe9a800 38%),radial-gradient(circle at 0 100%,#d9f2e6 0,#d9f2e600 35%); }
-    .wrap { max-width:480px; margin:auto; padding:max(18px,env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom)); }
-    h1 { font:700 1.6rem var(--cute); margin:4px 0 14px; }
-    h2 { font:700 1.05rem var(--cute); margin:0 0 12px; }
-    .card { background:#fff; border-radius:24px; padding:18px; margin-bottom:14px; box-shadow:0 6px 20px #8a6d1d14; border:1px solid var(--line); }
-    .hide { display:none !important; }
-    .month { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-    .month b { font:700 1rem var(--cute); }
-    .month button { width:36px; height:36px; border-radius:50%; border:0; background:#fff3d0; font-size:1.1rem; color:var(--ink); }
-    .month button:disabled { opacity:.35; }
-    .donut { position:relative; width:210px; height:210px; margin:6px auto 14px; }
-    .donut svg { width:100%; height:100%; transform:rotate(0deg); }
-    .center { position:absolute; inset:0; display:grid; place-content:center; text-align:center; }
-    .center small { color:var(--mute); } .center b { font:700 1.45rem var(--cute); }
-    .leg { display:flex; align-items:center; gap:10px; padding:8px 0; border-top:1px dashed var(--line); }
-    .leg:first-of-type { border-top:0; }
-    .ico { width:40px; height:40px; border-radius:14px; display:grid; place-items:center; font-size:1.3rem; flex:none; }
-    .leg .n { flex:1; font-weight:600; } .leg .n small { display:block; color:var(--mute); font-weight:400; }
-    .leg .a { font:700 .95rem var(--cute); text-align:right; }
-    .plot { display:flex; gap:6px; }
-    .col { flex:1; text-align:center; font-size:.75rem; }
-    .val { height:18px; font:700 .68rem var(--cute); color:#d9822b; white-space:nowrap; }
-    .bw { height:110px; display:flex; align-items:flex-end; }
-    .bar { width:100%; border-radius:10px 10px 6px 6px; background:#bfe8d8; }
-    .bar.top { background:var(--peach); }
-    .col .d { margin-top:6px; color:var(--mute); } .col.today .d { color:var(--green); font-weight:700; }
-    .tip { margin:12px 0 0; padding:10px 12px; border-radius:14px; background:#fff3d0; font-size:.9rem; }
-    .empty { color:var(--mute); text-align:center; padding:8px 0; }
-    form { display:grid; gap:14px; }
-    label.f { display:grid; gap:6px; font-weight:600; }
-    input[type=text], input[type=date], textarea { width:100%; font:inherit; padding:12px 14px; border-radius:14px;
-      border:2px solid var(--line); background:#fffdf7; color:inherit; font-weight:400; }
-    input.amt { font:700 1.8rem var(--cute); text-align:center; }
-    :focus-visible { outline:3px solid #2f9e7e88; outline-offset:2px; }
-    .cats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-    .cats input { position:absolute; opacity:0; pointer-events:none; }
-    .cats label { display:grid; justify-items:center; gap:4px; padding:10px 4px; border-radius:18px; border:2px solid var(--line);
-      background:#fffdf7; font-size:.8rem; font-weight:600; text-align:center; cursor:pointer; }
-    .cats .ico { width:42px; height:42px; }
-    .cats input:checked + label { border-color:var(--green); background:#e8f7f0; }
-    .cats input:focus-visible + label { outline:3px solid #2f9e7e88; }
-    .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .chips button { border:0; background:#fff3d0; border-radius:999px; padding:5px 12px 5px 6px; font:inherit; font-size:.85rem; color:var(--ink); display:inline-flex; align-items:center; gap:6px; }
-    .chips small { color:var(--mute); }
-    .go { border:0; border-radius:18px; padding:14px; font:700 1.05rem var(--cute); background:var(--green); color:#fff; width:100%; }
-    #status { min-height:1.4em; margin:0; overflow-wrap:anywhere; text-align:center; font-size:.9rem; }
-    #status[data-error="true"] { color:#c0392b; }
-    nav { position:fixed; left:0; right:0; bottom:0; background:#fffdf7f2; backdrop-filter:blur(8px); border-top:1px solid var(--line);
-      padding:8px 16px calc(8px + env(safe-area-inset-bottom)); }
-    nav div { max-width:480px; margin:auto; display:flex; gap:10px; }
-    nav button { flex:1; border:0; border-radius:16px; padding:8px; background:none; font:600 .8rem var(--cute); color:var(--mute); display:grid; gap:2px; }
-    nav button span { font-size:1.4rem; } nav button.on { background:#e8f7f0; color:var(--green); }
-  button,input,textarea,select{font-family:inherit}
-    .brand{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
-    .brand h1{margin:0}.brand small{color:var(--mute)}
-    .brand img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 4px 12px #8a6d1d26;flex:none}
-    .ico,.oi{position:relative;overflow:hidden}
-    .ico img,.oi img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-    .ico em,.oi em{font-style:normal}
-    .oi{width:26px;height:26px;display:grid;place-items:center;font-size:1.1rem;flex:none}
-    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-    .st{border-radius:20px;padding:12px 14px;border:1px solid var(--line);box-shadow:0 4px 14px #8a6d1d10}
+    :root{--ink:#3b3a33;--mute:#9a9484;--cream:#fff8e7;--line:#f0e8d2;--green:#2f9e7e;--peach:#ffb347;
+      --cute:'Mali','Sarabun',system-ui,sans-serif;font-family:var(--cute);color:var(--ink)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+    body{background:var(--cream);background-image:radial-gradient(circle at 90% 0,#ffe9a8 0,#ffe9a800 38%),radial-gradient(circle at 0 100%,#d9f2e6 0,#d9f2e600 35%)}
+    button,input,textarea,select{font-family:inherit}
+    #app{height:100vh;height:100dvh;max-width:480px;margin:auto;display:flex;flex-direction:column;padding-top:max(10px,env(safe-area-inset-top))}
+    .brand{display:flex;align-items:center;gap:10px;padding:0 16px 8px;flex:none}
+    .brand img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 10px #8a6d1d26;flex:none}
+    .brand h1{font:700 1.3rem var(--cute);margin:0;line-height:1.2}
+    .brand small{color:var(--mute);font-size:.8rem}
+    main{flex:1;min-height:0;position:relative}
+    .pg{position:absolute;inset:0;display:flex;flex-direction:column;gap:8px;padding:0 16px 8px;overflow-y:auto;scrollbar-width:none}
+    .pg::-webkit-scrollbar{display:none}
+    .hide{display:none!important}
+    .card{background:#fff;border-radius:22px;padding:12px 14px;border:1px solid var(--line);box-shadow:0 6px 20px #8a6d1d14}
+    .grow{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center}
+    .grow.dn{flex-direction:row;align-items:center;gap:12px}
+    h2{font:700 .95rem var(--cute);margin:0 0 6px}
+    .month{display:flex;align-items:center;justify-content:space-between;flex:none}
+    .month b{font:700 .95rem var(--cute)}
+    .month button{width:32px;height:32px;border-radius:50%;border:0;background:#fff3d0;font-size:1rem;color:var(--ink)}
+    .month button:disabled{opacity:.35}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:none}
+    .st{border-radius:16px;padding:8px 10px;border:1px solid var(--line);min-width:0}
     .st:nth-child(1){background:#fff3d0}.st:nth-child(2){background:#fde8f1}.st:nth-child(3){background:#e3f2fc}
     .st:nth-child(4){background:#e9e4fb}.st:nth-child(5){background:#e8f7f0}.st:nth-child(6){background:#fff}
-    .st .e{font-size:1.3rem}.st small{display:block;color:var(--mute)}
-    .st b{display:block;font:700 1.1rem var(--cute);margin:2px 0;overflow-wrap:anywhere}
-    .st span{font-size:.75rem;color:var(--mute)}
+    .st small,.st b,.st span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .st small{color:var(--mute);font-size:.68rem}
+    .st b{font:700 .95rem var(--cute);margin:1px 0}
+    .st span{font-size:.62rem;color:var(--mute)}
     .st .up{color:#d9534f}.st .down{color:var(--green)}
-    .empty img{border-radius:50%}
+    .dwrap{position:relative;flex:none;width:clamp(104px,19vh,150px);width:clamp(104px,19dvh,150px);aspect-ratio:1}
+    .dwrap svg{width:100%;height:100%}
+    .center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+    .center small{color:var(--mute);font-size:.6rem}.center b{font:700 .8rem var(--cute)}
+    #legend{flex:1;min-width:0}
+    .lg{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:.74rem}
+    .lg .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+    .lg b{font:700 .74rem var(--cute)}.lg small{color:var(--mute);width:2.6em;text-align:right}
+    .lg .oi{width:22px;height:22px;font-size:.9rem;border-radius:8px}
+    .plot{display:flex;gap:6px}
+    .col{flex:1;text-align:center;font-size:.72rem;min-width:0}
+    .val{height:16px;font:700 .64rem var(--cute);color:#d9822b;white-space:nowrap}
+    .bw{height:clamp(52px,11vh,100px);height:clamp(52px,11dvh,100px);display:flex;align-items:flex-end}
+    .bar{width:100%;border-radius:9px 9px 5px 5px;background:#bfe8d8}.bar.top{background:var(--peach)}
+    .col .d{margin-top:4px;color:var(--mute)}.col.today .d{color:var(--green);font-weight:700}
+    .tip{margin:8px 0 0;padding:6px 10px;border-radius:12px;background:#fff3d0;font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .empty{color:var(--mute);text-align:center;font-size:.85rem}.empty img{border-radius:50%}
+    #p-list .card{flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start}
+    #recent{flex:1;min-height:0;overflow:hidden}
+    .rc{display:flex;align-items:center;gap:10px;height:56px;border-top:1px dashed var(--line)}
+    .rc:first-child{border-top:0}
+    .rc .n{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rc .n small{display:block;color:var(--mute);font-weight:400;font-size:.72rem}
+    .rc .a{font:700 .9rem var(--cute)}
+    .ico,.oi{position:relative;overflow:hidden;display:grid;place-items:center;flex:none}
+    .ico{width:40px;height:40px;border-radius:14px;font-size:1.3rem}
+    .oi{width:26px;height:26px;font-size:1.1rem}
+    .ico img,.oi img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+    .ico em,.oi em{font-style:normal}
+    #expense{flex:1 0 auto;display:flex;flex-direction:column;gap:8px}
+    .row2{display:grid;grid-template-columns:1.15fr 1fr;gap:8px}
+    .f{display:grid;gap:4px;font-weight:600;font-size:.85rem;min-width:0}
+    input[type=text],input[type=date],textarea{display:block;width:100%;min-width:0;max-width:100%;font:inherit;font-size:16px;padding:9px 12px;border-radius:14px;border:2px solid var(--line);background:#fffdf7;color:inherit;font-weight:400;-webkit-appearance:none;appearance:none}
+    input[type=date]{min-height:46px;text-align:left}
+    input[type=date]::-webkit-date-and-time-value{text-align:left}
+    input.amt{font:700 1.4rem var(--cute);text-align:center;min-height:46px}
+    textarea{resize:none;height:60px}
+    :focus-visible{outline:3px solid #2f9e7e88;outline-offset:2px}
+    .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .cats input{position:absolute;opacity:0;pointer-events:none}
+    .cats label{display:grid;justify-items:center;gap:2px;padding:6px 2px;border-radius:16px;border:2px solid var(--line);background:#fffdf7;font-size:.75rem;font-weight:600;text-align:center;cursor:pointer}
+    .cats .ico{width:36px;height:36px;font-size:1.2rem}
+    .cats input:checked+label{border-color:var(--green);background:#e8f7f0}
+    .cats input:focus-visible+label{outline:3px solid #2f9e7e88}
+    .chips{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:max-content;align-content:start;gap:6px;min-height:70px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    .chips::-webkit-scrollbar{display:none}
+    .chips button{border:0;background:#fff3d0;border-radius:999px;padding:4px 12px 4px 5px;font:inherit;font-size:.8rem;color:var(--ink);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .chips .oi{width:22px;height:22px;font-size:.95rem}
+    .chips small{color:var(--mute)}
+    .go{border:0;border-radius:18px;padding:12px;font:700 1.05rem var(--cute);background:var(--green);color:#fff;width:100%;flex:none;margin-top:auto}
+    #status{min-height:1.2em;margin:0;text-align:center;font-size:.82rem;overflow-wrap:anywhere}
+    #status[data-error="true"]{color:#c0392b}
+    nav{flex:none;display:flex;gap:8px;background:#fffdf7f2;border-top:1px solid var(--line);padding:6px 12px calc(6px + env(safe-area-inset-bottom))}
+    nav button{flex:1;border:0;border-radius:14px;padding:6px;background:none;font:600 .75rem var(--cute);color:var(--mute);display:grid;gap:1px;justify-items:center}
+    nav button span{font-size:1.3rem}nav button.on{background:#e8f7f0;color:var(--green)}
+    @media (max-height:740px){.cats .ico{width:30px;height:30px;font-size:1rem}.cats label{padding:4px 2px}textarea{height:48px}.brand img{width:40px;height:40px}.chips{min-height:64px}}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <section id="p-home">
-    <div class="brand"><img src="mascot.png" alt=""><div><h1>รายจ่ายน้องตัง</h1><small>ภาพรวมการใช้จ่าย</small></div></div>
-    <div class="card">
+<div id="app">
+  <header class="brand"><img src="mascot.png" alt=""><div><h1>รายจ่ายน้องตัง</h1><small id="sub">ภาพรวมการใช้จ่าย</small></div></header>
+  <main>
+    <section id="p-home" class="pg">
       <div class="month"><button id="prev" aria-label="เดือนก่อน">‹</button><b id="month"></b><button id="next" aria-label="เดือนถัดไป">›</button></div>
-      <div class="donut"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div>
-      <div id="legend"></div>
-    </div>
-    <div class="stats" id="stats"></div>
-    <div class="card"><h2>7 วันล่าสุด 📊</h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
-    <div class="card"><h2>รายการล่าสุด 🧾</h2><div id="recent"></div></div>
-  </section>
-
-  <section id="p-add" class="hide">
-    <div class="brand"><img src="mascot.png" alt=""><div><h1>รายจ่ายน้องตัง</h1><small>จดรายการใหม่ ✏️</small></div></div>
-    <form id="expense" class="card">
-      <label class="f">จำนวนเงิน (บาท)
-        <input class="amt" name="amount" type="text" inputmode="decimal" maxlength="12" pattern="[0-9]{1,9}([.][0-9]{1,2})?" placeholder="0.00" required>
-      </label>
-      <label class="f">วันที่จ่าย <input name="date" type="date" required></label>
-      <div class="f" style="display:grid;gap:6px;font-weight:600">หมวดหมู่<div class="cats" id="cats"></div></div>
-      <div class="f" style="font-weight:600">รายละเอียด (ไม่บังคับ)
-        <textarea name="description" maxlength="300" rows="2" style="margin-top:6px"></textarea>
-        <div class="chips" id="chips"></div>
-      </div>
-      <button class="go" type="submit">บันทึกรายจ่าย</button>
-      <p id="status" role="status"></p>
-    </form>
-  </section>
+      <div class="stats" id="stats"></div>
+      <div class="card grow dn"><div class="dwrap"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div><div id="legend"></div></div>
+      <div class="card grow"><h2>7 วันล่าสุด 📊</h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
+    </section>
+    <section id="p-add" class="pg hide">
+      <form id="expense" class="card">
+        <div class="row2">
+          <label class="f">จำนวนเงิน (บาท)<input class="amt" name="amount" type="text" inputmode="decimal" maxlength="12" pattern="[0-9]{1,9}([.][0-9]{1,2})?" placeholder="0.00" required></label>
+          <label class="f">วันที่จ่าย<input name="date" type="date" required></label>
+        </div>
+        <div class="f">หมวดหมู่<div class="cats" id="cats"></div></div>
+        <div class="f">รายละเอียด (ไม่บังคับ)
+          <textarea name="description" maxlength="300" rows="2"></textarea>
+          <div class="chips" id="chips"></div>
+        </div>
+        <button class="go" type="submit">บันทึกรายจ่าย</button>
+        <p id="status" role="status"></p>
+      </form>
+    </section>
+    <section id="p-list" class="pg hide"><div class="card"><h2>รายการล่าสุด 🧾</h2><div id="recent"></div></div></section>
+  </main>
+  <nav>
+    <button data-page="home" class="on"><span>🏠</span>ภาพรวม</button>
+    <button data-page="add"><span>➕</span>บันทึก</button>
+    <button data-page="list"><span>🧾</span>รายการ</button>
+  </nav>
 </div>
-<nav><div>
-  <button data-page="home" class="on"><span>🏠</span>ภาพรวม</button>
-  <button data-page="add"><span>➕</span>บันทึก</button>
-</div></nav>
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbxG7-Y-KrsgPg4t0mxhNrEChp9KempXeFAKDyaqiIHyMNXq_2eAlEORjB22tWS49MWhvQ/exec';
 const QUEUE_KEY='expense-queue', TOKEN_KEY='expense-token';
@@ -139,7 +152,7 @@ const OPTS={
  other:O('other','merit,🙏,ทำบุญ/บริจาค|family,👨‍👩‍👧,ให้เงินครอบครัว|envelope,💌,ซองงานแต่ง/งานบุญ|friends,🍻,เลี้ยงสังสรรค์|trip,🏖️,ท่องเที่ยว|movie,🎬,ดูหนัง/คอนเสิร์ต|game,🎮,เติมเกม/ซื้อเกม|pet,🐶,สัตว์เลี้ยง/สัตวแพทย์|hair,💇,ตัดผม/ทำผม|laundry,🧺,ซักรีด|post,📮,ไปรษณีย์/ส่งพัสดุ|bank,🏦,ค่าธรรมเนียมธนาคาร')
 };
 const ic=(src,e)=>`<img src="${src}" alt="" onload="this.nextElementSibling.hidden=true" onerror="this.remove()"><em>${e}</em>`;
-const empty=t=>`<div class="empty"><img src="piggy.png" alt="" width="84" height="84"><br>${t}</div>`;
+const empty=t=>`<div class="empty"><img src="piggy.png" alt="" width="56" height="56"><br>${t}</div>`;
 const DAYS=['อา','จ','อ','พ','พฤ','ศ','ส'], DAYS_FULL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -205,19 +218,14 @@ function render(){
   ents.forEach(([c,a])=>{ const p=a/total*100, len=Math.max(p-(ents.length>1?.8:0),.1);
     segs+=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${icoOf(c)[1]}" stroke-width="6" stroke-dasharray="${len} ${100-len}" stroke-dashoffset="${off}"/>`; off-=p; });
   $('#donut').innerHTML=segs;
-  $('#legend').innerHTML=ents.length?ents.map(([c,a])=>`<div class="leg"><div class="ico" style="background:${icoOf(c)[1]}55">${ic('icons/cat/'+icoOf(c)[2]+'.png',icoOf(c)[0])}</div>
-    <div class="n">${esc(c)}<small>${Math.round(a/total*100)}%</small></div><div class="a">${baht(a)}</div></div>`).join('')
-    :empty('ยังไม่มีรายการในเดือนนี้');
+  $('#legend').innerHTML=ents.length?ents.map(([c,a])=>`<div class="lg"><span class="oi" style="background:${icoOf(c)[1]}55">${ic('icons/cat/'+icoOf(c)[2]+'.png',icoOf(c)[0])}</span><span class="n">${esc(c)}</span><b>฿${Math.round(a).toLocaleString('th-TH')}</b><small>${Math.round(a/total*100)}%</small></div>`).join(''):empty('ยังไม่มีรายการในเดือนนี้');
   const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return ymd(d);});
   const sums=days.map(d=>all.filter(r=>r.date===d).reduce((s,r)=>s+r.amount,0)), max=Math.max(...sums);
   $('#bars').innerHTML=days.map((d,i)=>{ const s=sums[i], top=max>0&&s===max, dow=new Date(d+'T00:00:00').getDay();
     return `<div class="col${i===6?' today':''}"><div class="val">${top?baht(s):''}</div><div class="bw"><div class="bar${top?' top':''}" style="height:${max?Math.max(s/max*100,s?6:2):2}%"></div></div><div class="d">${DAYS[dow]}</div></div>`; }).join('');
   const ti=sums.indexOf(max);
   $('#tip').textContent=max>0?`🏆 วัน${DAYS_FULL[new Date(days[ti]+'T00:00:00').getDay()]}ที่ ${+days[ti].slice(8)} ใช้เยอะสุด ${baht(max)}`:'7 วันนี้ยังไม่มีรายจ่าย';
-  const rec=[...all].reverse().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
-  $('#recent').innerHTML=rec.length?rec.map(r=>`<div class="leg"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div>
-    <div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join('')
-    :empty('ยังไม่มีรายการ');
+  renderRecent(all);
 }
 function renderStats(all,m,key,total,ents){
   const mr=all.filter(r=>r.date.startsWith(key)), now=new Date();
@@ -228,17 +236,22 @@ function renderStats(all,m,key,total,ents){
   const top=mr.reduce((a,r)=>!a||r.amount>a.amount?r:a,null);
   const byDay={}; mr.forEach(r=>byDay[r.date]=(byDay[r.date]||0)+r.amount);
   const td=Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
-  let cmp='–',csub='ไม่มีข้อมูลเดือนก่อน',cc='';
-  if(prev>0&&mr.length){const p=(total-prev)/prev*100; cmp=(p>0?'+':'')+Math.round(p)+'%'; csub=p>0?'ใช้มากกว่าเดือนก่อน':'ใช้น้อยกว่าหรือเท่าเดือนก่อน'; cc=p>0?'up':'down';}
+  let cmp='–',csub='ไม่มีข้อมูล',cc='';
+  if(prev>0&&mr.length){const p=(total-prev)/prev*100; cmp=(p>0?'+':'')+Math.round(p)+'%'; csub=p>0?'มากกว่าเดือนก่อน':'ไม่เกินเดือนก่อน'; cc=p>0?'up':'down';}
   const no='ยังไม่มีข้อมูล';
   const cards=[
     ['💸','เฉลี่ย/วัน',baht(total/days),monthOff===0?`จาก ${days} วันแล้ว`:`ทั้งเดือน ${days} วัน`,''],
-    ['🔥','ใช้สูงสุด (รายการ)',top?baht(top.amount):'–',top?`${top.description||top.category} · ${dm(top.date)}`:no,''],
-    ['📅','วันที่ใช้เยอะสุด',td?dm(td[0]):'–',td?baht(td[1]):no,''],
-    ['🏅','หมวดที่ใช้มากสุด',ents[0]?`${icoOf(ents[0][0])[0]} ${ents[0][0]}`:'–',ents[0]?`${Math.round(ents[0][1]/total*100)}% ของเดือน`:no,''],
-    ['🧾','จำนวนรายการ',mr.length+' รายการ',mr.length?`เฉลี่ยครั้งละ ${baht(total/mr.length)}`:no,''],
-    ['📈','เทียบเดือนก่อน',cmp,csub,cc]];
-  $('#stats').innerHTML=cards.map(([e,l,v,s,c])=>`<div class="st"><div class="e">${e}</div><small>${l}</small><b class="${c}">${esc(v)}</b><span>${esc(s)}</span></div>`).join('');
+    ['🔥','ใช้สูงสุด',top?baht(top.amount):'–',top?`${top.description||top.category} · ${dm(top.date)}`:no,''],
+    ['📅','วันเยอะสุด',td?dm(td[0]):'–',td?baht(td[1]):no,''],
+    ['🏅','หมวดมากสุด',ents[0]?`${icoOf(ents[0][0])[0]} ${ents[0][0]}`:'–',ents[0]?`${Math.round(ents[0][1]/total*100)}% ของเดือน`:no,''],
+    ['🧾','รายการ',mr.length+' รายการ',mr.length?`เฉลี่ยครั้งละ ${baht(total/mr.length)}`:no,''],
+    ['📈','vs เดือนก่อน',cmp,csub,cc]];
+  $('#stats').innerHTML=cards.map(([e,l,v,s,c])=>`<div class="st"><small>${e} ${l}</small><b class="${c}">${esc(v)}</b><span>${esc(s)}</span></div>`).join('');
+}
+function renderRecent(all){
+  all=all||allRows(); const box=$('#recent'), h=box.clientHeight; if(!h) return;
+  const rec=[...all].reverse().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,Math.max(3,Math.floor(h/56)));
+  box.innerHTML=rec.length?rec.map(r=>`<div class="rc"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join(''):empty('ยังไม่มีรายการ');
 }
 $('#prev').onclick=()=>{monthOff--;render();}; $('#next').onclick=()=>{monthOff++;render();};
 
@@ -266,15 +279,20 @@ form.addEventListener('submit',e=>{
   const q=readQueue(); q.push({...f,id:crypto.randomUUID()}); save(QUEUE_KEY,q);
   remember(f.category,f.description);
   const keep=f.date; form.reset(); form.elements.date.value=keep;
-  showStatus('กำลังส่ง…'); renderChips(); render(); form.elements.amount.focus(); flush();
+  showStatus('กำลังส่ง…'); renderChips(); render(); document.activeElement&&document.activeElement.blur(); flush();
 });
 
 /* ---------- Nav / lifecycle ---------- */
+const SUBS={home:'ภาพรวมการใช้จ่าย',add:'จดรายการใหม่ ✏️',list:'รายการล่าสุด 🧾'};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  const pg=b.dataset.page;
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
-  $('#p-home').classList.toggle('hide',b.dataset.page!=='home'); $('#p-add').classList.toggle('hide',b.dataset.page!=='add');
-  window.scrollTo(0,0); if(b.dataset.page==='add') form.elements.amount.focus();
+  document.querySelectorAll('.pg').forEach(x=>x.classList.toggle('hide',x.id!=='p-'+pg));
+  $('#sub').textContent=SUBS[pg];
+  if(document.activeElement) document.activeElement.blur();
+  if(pg==='list') renderRecent();
 });
+window.addEventListener('resize',()=>renderRecent());
 window.addEventListener('online',()=>{flush();refresh();});
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ readQueue().length?flush():refresh(); } });
 render(); renderChips(); readQueue().length?flush():refresh();
