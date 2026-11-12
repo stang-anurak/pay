@@ -172,6 +172,33 @@ nav button:active span{transform:scale(.85)}
 .daytotal{font-weight:700;color:var(--green)}
 #dayList{max-height:50dvh;overflow-y:auto}
 #dayList .rc:last-child{border-bottom:0}
+/* งบประมาณ */
+.bud{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px}
+.bcont{flex:1;min-width:0;display:grid;gap:6px}
+.br{display:flex;align-items:center;gap:6px;font-size:.72rem}
+.bl2{flex:none;width:5.4em;font-weight:600;white-space:nowrap}
+.bt{flex:1;height:8px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bt i{display:block;height:100%;border-radius:99px;background:var(--green);transition:width .6s}
+.bt i.warn{background:var(--peach)}.bt i.over{background:#e8575a}
+.br b{flex:none;font:700 .72rem var(--cute);white-space:nowrap}
+.br b small{color:var(--mute);font-weight:400;font-size:.62rem}
+.br b.over{color:#d9534f}
+.angry-ico{width:44px;height:44px;font-size:2rem;animation:grr .6s ease-in-out infinite alternate}
+@keyframes grr{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+.bnote{font-weight:400;color:var(--mute);font-size:.62rem;margin-left:4px}
+.bw{position:relative}
+.bl{position:absolute;left:-3px;right:-3px;height:0;border-top:1.5px dashed #e8575a;opacity:.8;pointer-events:none;z-index:2}
+.val{z-index:3;text-shadow:0 0 3px #fff,0 0 3px #fff}
+.val.over{color:#d9534f}
+.angrywrap{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:#3b3a3344}
+.angrybox{background:#fff;border-radius:26px;padding:18px 26px 16px;text-align:center;max-width:300px;box-shadow:0 14px 40px #3b3a3340;animation:shk .5s}
+.angrybox .ac{position:relative;width:110px;height:110px;margin:0 auto 6px;font-size:4.4rem;display:grid;place-items:center;overflow:hidden}
+.angrybox .ac img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.angrybox .ac em{font-style:normal}
+.angrybox b{display:block;font:700 1.05rem var(--cute);color:#d9534f}
+.angrybox p{margin:4px 0 0;font-size:.82rem;color:var(--mute)}
+@keyframes shk{0%,100%{transform:none}20%{transform:translateX(-10px) rotate(-3deg)}40%{transform:translateX(10px) rotate(3deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.angry-ico,.angrybox{animation:none}}
   </style>
 </head>
 <body>
@@ -180,9 +207,10 @@ nav button:active span{transform:scale(.85)}
   <main>
     <section id="p-home" class="pg">
       <div class="month"><button id="prev" aria-label="เดือนก่อน">‹</button><b id="month"></b><button id="next" aria-label="เดือนถัดไป">›</button></div>
+      <div class="card bud" id="bud"></div>
       <div class="stats" id="stats"></div>
       <div class="card grow dn"><div class="dwrap"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div><div id="legend"></div></div>
-      <div class="card grow"><h2>7 วันล่าสุด 📊</h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
+      <div class="card grow"><h2>7 วันล่าสุด 📊 <small class="bnote">เส้นประแดง = งบวันละ ฿250</small></h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
     </section>
     <section id="p-add" class="pg hide">
       <form id="expense" class="card">
@@ -232,6 +260,7 @@ nav button:active span{transform:scale(.85)}
     <div id="dayList"></div>
   </div>
 </div></div>
+<div id="angry" class="angrywrap hide"><div class="angrybox"><div class="ac" id="angryIco"></div><b id="angryTtl"></b><p id="angryMsg"></p></div></div>
 <div id="who" class="who"><h1>ใครใช้งานอยู่นะ? 💰</h1><p>แตะรูปเพื่อเข้าใช้งาน</p>
   <div class="row">
     <button class="pick" data-u="tang"><img src="face-tang.png" alt="">น้องตัง</button>
@@ -260,6 +289,7 @@ nav button:active span{transform:scale(.85)}
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbxG7-Y-KrsgPg4t0mxhNrEChp9KempXeFAKDyaqiIHyMNXq_2eAlEORjB22tWS49MWhvQ/exec';
 const QUEUE_KEY='expense-queue', TOKEN_KEY='expense-token';
+const BUDGET_MONTH=7500, BUDGET_DAY=250; /* งบรวมต่อเดือน / งบต่อวัน (บาท) */
 const CATS={'อาหาร':['🍜','#ffb36b','food'],'เดินทาง':['🚌','#7cc4f0','travel'],'ช้อปปิ้ง':['🛍️','#f59ac0','shop'],
   'ที่พักและบิล':['🏠','#b7a2f0','bill'],'สุขภาพ':['💊','#7fd8a6','health'],'อื่น ๆ':['✨','#f2d36b','other']};
 const O=(c,l)=>l.split('|').map(x=>{const [k,e,t]=x.split(',');return {k:c+'-'+k,e,t};});
@@ -355,7 +385,7 @@ function render(){
   const by={}; let total=0;
   all.filter(r=>r.date.startsWith(key)).forEach(r=>{by[r.category]=(by[r.category]||0)+r.amount; total+=r.amount;});
   const ents=Object.entries(by).sort((a,b)=>b[1]-a[1]);
-  countUp($('#total'),total); renderStats(all,m,key,total,ents);
+  countUp($('#total'),total); renderStats(all,m,key,total,ents); renderBudget(all,total);
   let off=25, segs='<circle r="15.9155" cx="21" cy="21" fill="none" style="stroke:var(--line)" stroke-width="6"/>';
   ents.forEach(([c,a])=>{ const p=a/total*100, len=Math.max(p-(ents.length>1?.8:0),.1);
     segs+=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${icoOf(c)[1]}" stroke-width="6" stroke-dasharray="${len} ${100-len}" stroke-dashoffset="${off}"/>`; off-=p; });
@@ -364,11 +394,18 @@ function render(){
   const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return ymd(d);});
   const sums=days.map(d=>all.filter(r=>r.date===d).reduce((s,r)=>s+r.amount,0)), max=Math.max(...sums);
   $('#bars').innerHTML=days.map((d,i)=>{ const s=sums[i], top=max>0&&s===max, dow=new Date(d+'T00:00:00').getDay();
-    const h=max?Math.max(s/max*100,s?6:2):2;
-    return `<div class="col${i===6?' today':''}" data-d="${d}" role="button" tabindex="0" aria-label="ดูรายการวันที่ ${+d.slice(8)}"><div class="bw"><div class="bcol" style="--i:${i};height:${h}%"><div class="val">${s?'฿'+short(s):''}</div><div class="bar" style="--c:${DAY_COLORS[dow]};--i:${i}"></div></div></div><div class="d">${DAYS[dow]}</div></div>`; }).join('');
+    const sc=Math.max(max,BUDGET_DAY), h=Math.max(s/sc*100,s?6:2);
+    return `<div class="col${i===6?' today':''}" data-d="${d}" role="button" tabindex="0" aria-label="ดูรายการวันที่ ${+d.slice(8)}"><div class="bw"><div class="bcol" style="--i:${i};height:${h}%"><div class="val${s>BUDGET_DAY?' over':''}">${s?'฿'+short(s):''}</div><div class="bar" style="--c:${DAY_COLORS[dow]};--i:${i}"></div></div><div class="bl" style="bottom:calc((100% - 16px)*${(BUDGET_DAY/sc).toFixed(4)})"></div></div><div class="d">${DAYS[dow]}</div></div>`; }).join('');
   const ti=sums.indexOf(max);
   $('#tip').textContent=max>0?`🏆 วัน${DAYS_FULL[new Date(days[ti]+'T00:00:00').getDay()]}ที่ ${+days[ti].slice(8)} ใช้เยอะสุด ${baht(max)}`:'7 วันนี้ยังไม่มีรายจ่าย';
   renderRecent(all);
+}
+function renderBudget(all,total){
+  const today=ymd(new Date()), td=monthOff===0?all.filter(r=>r.date===today).reduce((s,r)=>s+r.amount,0):0;
+  const row=(e,l,v,b)=>{ const p=v/b*100, over=v>b, warn=p>=80&&!over;
+    return `<div class="br"><span class="bl2">${e} ${l}</span><div class="bt"><i class="${over?'over':warn?'warn':''}" style="width:${Math.min(p,100)}%"></i></div><b class="${over?'over':''}">฿${Math.round(v).toLocaleString('th-TH')}<small>/${b.toLocaleString('th-TH')}</small></b></div>`; };
+  const over=total>BUDGET_MONTH||(monthOff===0&&td>BUDGET_DAY);
+  $('#bud').innerHTML=`<div class="bcont">${row('💰','งบเดือน',total,BUDGET_MONTH)}${monthOff===0?row('☀️','งบวันนี้',td,BUDGET_DAY):''}</div>${over?`<span class="oi angry-ico">${ic('pets/cat-angry.webp','😾')}</span>`:''}`;
 }
 function renderStats(all,m,key,total,ents){
   const mr=all.filter(r=>r.date.startsWith(key)), now=new Date();
@@ -424,7 +461,7 @@ form.addEventListener('submit',e=>{
   const q=readQueue(); q.push({...f,id,user,ts}); save(QUEUE_KEY,q);
   remember(f.category,f.description);
   const keep=f.date; form.reset(); form.elements.date.value=keep;
-  showStatus('กำลังส่ง…'); renderChips(); render(); document.activeElement&&document.activeElement.blur(); burst(); flush();
+  showStatus('กำลังส่ง…'); renderChips(); render(); document.activeElement&&document.activeElement.blur(); const ov=overInfo(f.date); ov?angry(...ov):burst(); flush();
 });
 
 
@@ -496,6 +533,25 @@ $('#bars').onclick=e=>{ const c=e.target.closest('.col'); if(c) openDay(c.datase
 $('#bars').onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ const c=e.target.closest('.col'); if(c){ e.preventDefault(); openDay(c.dataset.d); } } };
 dayModal.addEventListener('click',e=>{ if(e.target===dayModal||e.target.closest('[data-dclose]')) closeDay(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!dayModal.classList.contains('hide')) closeDay(); });
+
+/* ---------- แมวโกรธเมื่อใช้เกินงบ ---------- */
+let angryT=0;
+const closeAngry=()=>$('#angry').classList.add('hide');
+function angry(t,m){
+  $('#angryIco').innerHTML=ic('pets/cat-angry.webp','😾'); $('#angryTtl').textContent=t; $('#angryMsg').textContent=m;
+  const a=$('#angry'), bx=a.firstElementChild; a.classList.remove('hide');
+  bx.style.animation='none'; void bx.offsetWidth; bx.style.animation='';
+  clearTimeout(angryT); angryT=setTimeout(closeAngry,3200);
+  if(navigator.vibrate) navigator.vibrate([60,40,60]);
+}
+$('#angry').onclick=closeAngry;
+function overInfo(date){
+  const all=allRows(), sum=f=>all.filter(f).reduce((s,r)=>s+r.amount,0);
+  const mo=sum(r=>r.date.startsWith(date.slice(0,7))), day=sum(r=>r.date===date);
+  if(mo>BUDGET_MONTH) return ['เกินงบเดือนแล้วนะ!',`ใช้ไป ${baht(mo)} เกินงบ ${baht(BUDGET_MONTH)} อยู่ ${baht(mo-BUDGET_MONTH)}`];
+  if(day>BUDGET_DAY) return [date===ymd(new Date())?'วันนี้เกินงบแล้วนะ!':`วันที่ ${+date.slice(8)}/${+date.slice(5,7)} เกินงบ!`,`ใช้ไป ${baht(day)} เกินงบวันละ ${baht(BUDGET_DAY)} อยู่ ${baht(day-BUDGET_DAY)}`];
+  return null;
+}
 
 /* ---------- Nav / lifecycle ---------- */
 const SUBS={home:'ภาพรวมการใช้จ่าย',add:'จดรายการใหม่ ✏️',list:'รายการล่าสุด 🧾'};
