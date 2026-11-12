@@ -187,7 +187,7 @@ nav button:active span{transform:scale(.85)}
 @keyframes grr{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
 .bnote{font-weight:400;color:var(--mute);font-size:.62rem;margin-left:4px}
 .bw{position:relative}
-.bl{position:absolute;left:-3px;right:-3px;height:0;border-top:1.5px dashed #e8575a;opacity:.8;pointer-events:none;z-index:2}
+.bl{position:absolute;left:-3px;right:-3px;height:0;border-top:1.5px dashed #ffb870;opacity:1;pointer-events:none;z-index:2}
 .val{z-index:3;text-shadow:0 0 3px #fff,0 0 3px #fff}
 .val.over{color:#d9534f}
 .angrywrap{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:#3b3a3344}
@@ -199,6 +199,23 @@ nav button:active span{transform:scale(.85)}
 .angrybox p{margin:4px 0 0;font-size:.82rem;color:var(--mute)}
 @keyframes shk{0%,100%{transform:none}20%{transform:translateX(-10px) rotate(-3deg)}40%{transform:translateX(10px) rotate(3deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
 @media (prefers-reduced-motion:reduce){.angry-ico,.angrybox{animation:none}}
+/* กระชับให้จบในหน้าเดียว */
+#p-home{gap:6px}
+#p-home .card{padding:10px 12px}
+#p-home h2{margin-bottom:4px}
+.stats{gap:6px}
+.st{padding:6px 8px}
+.st small{font-size:.62rem}
+.st small .oi{width:20px;height:20px;margin:1px 3px 1px 0;font-size:.75rem}
+.st small .oi img{inset:2px;width:calc(100% - 4px);height:calc(100% - 4px)}
+.st b{font-size:.88rem;margin:0}
+.st span{font-size:.58rem}
+.bud{padding:6px 12px}.bcont{gap:4px}
+.angry-ico{width:38px;height:38px;font-size:1.7rem}
+.dwrap{width:clamp(96px,min(17vh,40vw),150px);width:clamp(96px,min(17dvh,40vw),150px)}
+.bw{height:clamp(60px,calc(7vh + 16px),100px);height:clamp(60px,calc(7dvh + 16px),100px)}
+.tip{margin-top:6px;padding:4px 10px}
+@media (max-height:700px){.tip{display:none}.st span{display:none}.brand img{width:36px;height:36px}.brand h1{font-size:1.15rem}}
   </style>
 </head>
 <body>
@@ -210,7 +227,7 @@ nav button:active span{transform:scale(.85)}
       <div class="card bud" id="bud"></div>
       <div class="stats" id="stats"></div>
       <div class="card grow dn"><div class="dwrap"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div><div id="legend"></div></div>
-      <div class="card grow"><h2>7 วันล่าสุด 📊 <small class="bnote">เส้นประแดง = งบวันละ ฿250</small></h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
+      <div class="card grow"><h2>7 วันล่าสุด 📊 <small class="bnote">เส้นประส้ม = งบวันละ ฿250</small></h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
     </section>
     <section id="p-add" class="pg hide">
       <form id="expense" class="card">
