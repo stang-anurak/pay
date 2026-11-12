@@ -64,9 +64,8 @@
     .plot{display:flex;gap:6px}
     .col{flex:1;text-align:center;font-size:.72rem;min-width:0}
     .val{height:16px;font:700 .64rem var(--cute);color:#7a5a2a;white-space:nowrap}
-    .val.top{color:#c4600f;font-size:.7rem}
     .bw{height:clamp(52px,11vh,100px);height:clamp(52px,11dvh,100px);display:flex;align-items:flex-end}
-    .bar{width:100%;border-radius:9px 9px 5px 5px;background:var(--c,#bfe8d8)}.bar.top{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--c,var(--peach))}
+    .bar{width:100%;border-radius:9px 9px 5px 5px;background:var(--c,#bfe8d8)}
     .col .d{margin-top:4px;color:var(--mute)}.col.today .d{color:var(--green);font-weight:700}
     .tip{margin:8px 0 0;padding:6px 10px;border-radius:12px;background:var(--soft);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .empty{color:var(--mute);text-align:center;font-size:.85rem}.empty img{border-radius:50%}
@@ -149,14 +148,6 @@
     .whopet{height:min(20vh,150px);width:auto;margin-top:14px;filter:drop-shadow(0 4px 8px #8a6d1d26)}
 
 /* ===== ลูกเล่นเพิ่ม ===== */
-/* 1) อารมณ์แมว + 7,8,9) badge */
-.mood{flex:none;display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:18px;padding:6px 12px;font-size:.8rem;font-weight:600}
-.mood span{font-size:1.5rem;animation:wob 2.4s ease-in-out infinite}
-.mood p{margin:0}
-@keyframes wob{50%{transform:rotate(-8deg) scale(1.12)}}
-.badges{display:flex;flex-wrap:wrap;gap:6px;flex:none}.badges:empty{display:none}
-.bd{border-radius:999px;padding:3px 10px;font-size:.72rem;font-weight:600;background:#fff;border:1px solid var(--line)}
-.bd.fire{background:#ffe3c8}.bd.nudge{background:#e3f2fc;cursor:pointer}.bd.star{background:#fff3b0}
 /* 2) กราฟเด้ง + โดนัทหมุนเข้า */
 .play .bar{transform-origin:bottom;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i,0)*70ms)}
 @keyframes pop{from{transform:scaleY(0)}to{transform:scaleY(1)}}
@@ -170,19 +161,7 @@ nav button.on span{animation:navpop .45s cubic-bezier(.34,1.56,.64,1)}
 @keyframes navpop{0%{transform:scale(.6) rotate(-12deg)}60%{transform:scale(1.25) rotate(6deg)}100%{transform:none}}
 nav button:active span{transform:scale(.85)}
 .go:active,.pick:active,.chips button:active,.cats label:active{transform:scale(.96)}
-@media (prefers-reduced-motion:reduce){.play .bar,.play #donut,.mood span,nav button.on span,.fx{animation:none!important}}
-/* 10) โหมดกลางคืน */
-:root[data-mode=night]{--ink:#f3ecff;--mute:#b3a8cf;--cream:#241b3a;--line:#3d3258;--soft:#3a2f57;--field:#2e2548;--glow:#5b3f8f;--navbg:#2e2548f2;color-scheme:dark}
-:root[data-mode=night] body{background-image:radial-gradient(circle at 90% 0,var(--glow) 0,transparent 38%),radial-gradient(circle at 0 100%,#2f4a6e 0,transparent 35%)}
-:root[data-mode=night] .card,:root[data-mode=night] .sheet{background:#2e2548}
-:root[data-mode=night] .st:nth-child(n){background:#352b52}
-:root[data-mode=night] .bd{background:#3a2f57}
-:root[data-mode=night] .val{color:#ffd9a0}
-:root[data-mode=night] .val.top{color:#ffb347}
-:root[data-mode=night] .cats input:checked+label,:root[data-mode=night] nav button.on{background:#2c4a4a}
-:root[data-mode=night] .acts .del,:root[data-mode=night] .act button[data-act=del]{background:#4a2a38}
-:root[data-mode=night] .who{background:#241b3a}
-:root[data-mode=night] .pick{background:#2e2548;border-color:#3d3258}
+@media (prefers-reduced-motion:reduce){.play .bar,.play #donut,nav button.on span,.fx{animation:none!important}}
   </style>
 </head>
 <body>
@@ -191,7 +170,6 @@ nav button:active span{transform:scale(.85)}
   <main>
     <section id="p-home" class="pg">
       <div class="month"><button id="prev" aria-label="เดือนก่อน">‹</button><b id="month"></b><button id="next" aria-label="เดือนถัดไป">›</button></div>
-      <div class="mood" id="mood"></div><div class="badges" id="badges"></div>
       <div class="stats" id="stats"></div>
       <div class="card grow dn"><div class="dwrap"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div><div id="legend"></div></div>
       <div class="card grow"><h2>7 วันล่าสุด 📊</h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
@@ -218,7 +196,6 @@ nav button:active span{transform:scale(.85)}
     <button data-page="home" class="on"><span>🏠</span>ภาพรวม</button>
     <button data-page="add"><span>➕</span>บันทึก</button>
     <button data-page="list"><span>🧾</span>รายการ</button>
-    <button type="button" id="modeBtn"><span>🌙</span>กลางคืน</button>
   </nav>
 </div>
 <div id="modal" class="modal hide"><div class="sheet" role="dialog" aria-modal="true">
@@ -355,11 +332,10 @@ function render(){
   const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return ymd(d);});
   const sums=days.map(d=>all.filter(r=>r.date===d).reduce((s,r)=>s+r.amount,0)), max=Math.max(...sums);
   $('#bars').innerHTML=days.map((d,i)=>{ const s=sums[i], top=max>0&&s===max, dow=new Date(d+'T00:00:00').getDay();
-    return `<div class="col${i===6?' today':''}"><div class="val${top?' top':''}">${s?(top?baht(s):short(s)):''}</div><div class="bw"><div class="bar${top?' top':''}" style="--c:${DAY_COLORS[dow]};--i:${i};height:${max?Math.max(s/max*100,s?6:2):2}%"></div></div><div class="d">${DAYS[dow]}</div></div>`; }).join('');
+    return `<div class="col${i===6?' today':''}"><div class="val">${s?'฿'+short(s):''}</div><div class="bw"><div class="bar" style="--c:${DAY_COLORS[dow]};--i:${i};height:${max?Math.max(s/max*100,s?6:2):2}%"></div></div><div class="d">${DAYS[dow]}</div></div>`; }).join('');
   const ti=sums.indexOf(max);
   $('#tip').textContent=max>0?`🏆 วัน${DAYS_FULL[new Date(days[ti]+'T00:00:00').getDay()]}ที่ ${+days[ti].slice(8)} ใช้เยอะสุด ${baht(max)}`:'7 วันนี้ยังไม่มีรายจ่าย';
   renderRecent(all);
-  renderBadges(all);
 }
 function renderStats(all,m,key,total,ents){
   const mr=all.filter(r=>r.date.startsWith(key)), now=new Date();
@@ -370,9 +346,8 @@ function renderStats(all,m,key,total,ents){
   const top=mr.reduce((a,r)=>!a||r.amount>a.amount?r:a,null);
   const byDay={}; mr.forEach(r=>byDay[r.date]=(byDay[r.date]||0)+r.amount);
   const td=Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
-  let cmp='–',csub='ไม่มีข้อมูล',cc='',pct=null;
-  if(prev>0&&mr.length){const p=(total-prev)/prev*100; cmp=(p>0?'+':'')+Math.round(p)+'%'; csub=p>0?'มากกว่าเดือนก่อน':'ไม่เกินเดือนก่อน'; cc=p>0?'up':'down'; pct=p;}
-  renderMood(pct,total,mr.length);
+  let cmp='–',csub='ไม่มีข้อมูล',cc='';
+  if(prev>0&&mr.length){const p=(total-prev)/prev*100; cmp=(p>0?'+':'')+Math.round(p)+'%'; csub=p>0?'มากกว่าเดือนก่อน':'ไม่เกินเดือนก่อน'; cc=p>0?'up':'down'}
   const no='ยังไม่มีข้อมูล';
   const cards=[
     ['💸','เฉลี่ย/วัน',baht(total/days),monthOff===0?`จาก ${days} วันแล้ว`:`ทั้งเดือน ${days} วัน`,''],
@@ -495,11 +470,10 @@ function choose(u){
   form.reset(); form.elements.date.value=ymd(new Date()); showStatus('');
   document.querySelector('nav button[data-page=home]').click();
   $('#who').classList.add('hide'); render(); renderChips(); refresh();
-  applyMode();
 }
 document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>choose(b.dataset.u));
 $('#swap').onclick=()=>{ document.documentElement.dataset.theme='';
-  document.querySelector('meta[name=theme-color]').content='#fff8e7'; $('#who').classList.remove('hide'); applyMode(); };
+  document.querySelector('meta[name=theme-color]').content='#fff8e7'; $('#who').classList.remove('hide'); };
 /* ---------- น้องแมว ---------- */
 $('#petImg').src=petAt(0); $('#whoPet').src=petAt(2);
 $('#petBtn').onclick=()=>{ petNow=(petNow+1)%PETS.length; $('#petImg').src=petAt(0);
@@ -508,31 +482,6 @@ const fitPet=()=>{ const p=$('#petAdd'); p.classList.toggle('tiny',p.clientHeigh
 if(window.ResizeObserver) new ResizeObserver(fitPet).observe($('#petAdd'));
 
 /* ---------- ลูกเล่นเพิ่ม ---------- */
-/* 1) แมวมีอารมณ์ */
-function renderMood(p,total,n){
-  let f,t;
-  if(!n){f='😴';t='เดือนนี้ยังไม่มีรายการเลย'}
-  else if(p==null){f='🐱';t='เริ่มจดแล้ว เก่งมาก!'}
-  else if(p<=-10){f='😻';t='ใช้น้อยกว่าเดือนก่อนด้วย เก่งมากเลย!'}
-  else if(p<=10){f='😺';t='ใช้ใกล้เคียงเดือนก่อน กำลังดี'}
-  else if(p<=30){f='😿';t='เริ่มเยอะกว่าเดือนก่อนแล้วนะ'}
-  else{f='🙀';t='ตกใจ! เกินเดือนก่อนเยอะเลย'}
-  $('#mood').innerHTML=`<span>${f}</span><p>${t}</p>`;
-}
-/* 7,8,9) ชวนจด / streak / ดาวประหยัด */
-function renderBadges(all){
-  const set=new Set(all.map(r=>r.date)), now=new Date(), b=[];
-  const day=o=>{const d=new Date(now);d.setDate(d.getDate()-o);return ymd(d);};
-  const o=set.has(day(0))?0:1; let streak=0;
-  while(set.has(day(o+streak))) streak++;
-  if(streak>=2) b.push(`<span class="bd fire">🔥 จดต่อเนื่อง ${streak} วัน</span>`);
-  if(!set.has(day(0))) b.push(`<span class="bd nudge">🐱 วันนี้ยังไม่ได้จดเลยนะ แตะเพื่อจด</span>`);
-  const sum=(a,z)=>all.filter(r=>r.date>=day(a)&&r.date<=day(z)).reduce((s,r)=>s+r.amount,0);
-  const tw=sum(6,0), pw=sum(13,7);
-  if(pw>0&&tw<pw) b.push(`<span class="bd star">⭐ สัปดาห์นี้ประหยัดกว่าสัปดาห์ก่อน</span>`);
-  $('#badges').innerHTML=b.join('');
-}
-$('#badges').onclick=e=>{ if(e.target.closest('.nudge')) document.querySelector('nav button[data-page=add]').click(); };
 /* 2) เล่นแอนิเมชันหน้าหลัก */
 function playHome(){ const p=$('#p-home'); p.classList.remove('play'); void p.offsetWidth; p.classList.add('play');
   clearTimeout(playHome.t); playHome.t=setTimeout(()=>p.classList.remove('play'),1400); }
@@ -567,17 +516,6 @@ function burst(){
     const prev=dx>0, btn=$(prev?'#prev':'#next'); if(btn.disabled) return;
     btn.click(); el.animate([{transform:`translateX(${prev?-40:40}px)`,opacity:.3},{transform:'none',opacity:1}],{duration:250,easing:'ease-out'});
   },{passive:true}); })();
-/* 10) โหมดกลางคืน */
-const NIGHT_KEY='expense-night';
-function applyMode(){
-  const n=localStorage.getItem(NIGHT_KEY)==='1';
-  document.documentElement.dataset.mode=n?'night':'';
-  document.querySelector('meta[name=theme-color]').content=n?'#241b3a':(user?USERS[user].bar:'#fff8e7');
-  $('#modeBtn').innerHTML=n?'<span>☀️</span>กลางวัน':'<span>🌙</span>กลางคืน';
-}
-$('#modeBtn').onclick=()=>{ localStorage.setItem(NIGHT_KEY,localStorage.getItem(NIGHT_KEY)==='1'?'0':'1'); applyMode(); };
-applyMode();
-
 if(readQueue().length) flush();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
