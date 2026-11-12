@@ -294,6 +294,21 @@ function showStatus(m,err=false){status.textContent=m;status.dataset.error=Strin
 function remember(cat,text){ if(!text) return; descs[cat]=[text,...(descs[cat]||[]).filter(x=>x!==text)].slice(0,8); save(uk('expense-desc'),descs); }
 function allRows(){ const ids=new Set(rows.map(r=>r.id)); return rows.concat(readQueue().filter(q=>(q.user||'tang')===user&&!ids.has(q.id)).map(q=>({...q,amount:Number(q.amount)}))); }
 const readQueue=()=>load(QUEUE_KEY,[]);
+/* เวลาบันทึก: ใช้จากเซิร์ฟเวอร์ถ้ามี ไม่งั้นใช้ที่จำไว้ในเครื่อง */
+const TIMES_KEY='expense-times';
+const times=load(TIMES_KEY,{});
+function tod(r){
+  let v=r.ts??r.time??r.timestamp??r.createdAt??times[r.id];
+  if(v==null||v==='') return null;
+  if(typeof v==='string'){
+    const m=v.match(/^\s*(\d{1,2}):(\d{2})(?::(\d{2}))?\s*$/); if(m) return +m[1]*3600+ +m[2]*60+ +(m[3]||0);
+    if(/^\d{12,}$/.test(v)) v=Number(v);
+  }
+  const d=new Date(v); if(isNaN(d)) return null;
+  return d.getHours()*3600+d.getMinutes()*60+d.getSeconds();
+}
+const hm=r=>{ const t=tod(r); return t==null?'':String(Math.floor(t/3600)).padStart(2,'0')+':'+String(Math.floor(t%3600/60)).padStart(2,'0'); };
+const byTime=(a,b)=>{ const x=tod(a), y=tod(b); return x==null&&y==null?0:x==null?1:y==null?-1:x-y; };
 
 /* ---------- API ---------- */
 async function api(payload){
@@ -379,8 +394,8 @@ function renderStats(all,m,key,total,ents){
 }
 function renderRecent(all){
   all=all||allRows(); const box=$('#recent');
-  const rec=[...all].reverse().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,100);
-  box.innerHTML=rec.length?rec.map(r=>`<div class="rc" data-id="${esc(r.id)}"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}</small></div><div class="a">${baht(r.amount)}</div><div class="act"><button type="button" data-act="edit" aria-label="แก้ไข">✏️</button><button type="button" data-act="del" aria-label="ลบ">🗑️</button></div></div>`).join(''):empty('ยังไม่มีรายการ');
+  const rec=[...all].reverse().sort((a,b)=>b.date.localeCompare(a.date)||-byTime(a,b)).slice(0,100);
+  box.innerHTML=rec.length?rec.map(r=>`<div class="rc" data-id="${esc(r.id)}"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}${hm(r)?' · '+hm(r)+' น.':''}</small></div><div class="a">${baht(r.amount)}</div><div class="act"><button type="button" data-act="edit" aria-label="แก้ไข">✏️</button><button type="button" data-act="del" aria-label="ลบ">🗑️</button></div></div>`).join(''):empty('ยังไม่มีรายการ');
 }
 $('#prev').onclick=()=>{monthOff--;render();}; $('#next').onclick=()=>{monthOff++;render();};
 
@@ -405,7 +420,8 @@ form.addEventListener('submit',e=>{
   const f=Object.fromEntries(new FormData(form));
   if(!(Number(f.amount)>0)){ showStatus('กรุณากรอกจำนวนเงินมากกว่า 0 บาท',true); form.elements.amount.focus(); return; }
   f.description=f.description.trim();
-  const q=readQueue(); q.push({...f,id:crypto.randomUUID(),user}); save(QUEUE_KEY,q);
+  const id=crypto.randomUUID(), ts=Date.now(); times[id]=ts; save(TIMES_KEY,times);
+  const q=readQueue(); q.push({...f,id,user,ts}); save(QUEUE_KEY,q);
   remember(f.category,f.description);
   const keep=f.date; form.reset(); form.elements.date.value=keep;
   showStatus('กำลังส่ง…'); renderChips(); render(); document.activeElement&&document.activeElement.blur(); burst(); flush();
@@ -467,12 +483,12 @@ $('#delGo').onclick=async()=>{
 /* ---------- popup รายการของวัน ---------- */
 const dayModal=$('#dayModal');
 function openDay(d){
-  const list=allRows().filter(r=>r.date===d).sort((a,b)=>b.amount-a.amount);
+  const list=allRows().filter(r=>r.date===d).sort(byTime);
   const dt=new Date(d+'T00:00:00'), isToday=d===ymd(new Date());
   $('#dayTitle').textContent=(isToday?'วันนี้ · ':'')+dt.toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'});
   const total=list.reduce((s,r)=>s+r.amount,0);
   $('#dayTotal').textContent=list.length?`รวม ${baht(total)} · ${list.length} รายการ`:'';
-  $('#dayList').innerHTML=list.length?list.map(r=>`<div class="rc"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${esc(r.category)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join(''):empty(isToday?'วันนี้ยังไม่มีรายจ่าย':'วันนี้ไม่มีรายจ่าย');
+  $('#dayList').innerHTML=list.length?list.map(r=>`<div class="rc"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${hm(r)?hm(r)+' น. · ':''}${esc(r.category)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join(''):empty(isToday?'วันนี้ยังไม่มีรายจ่าย':'วันนี้ไม่มีรายจ่าย');
   dayModal.classList.remove('hide');
 }
 const closeDay=()=>dayModal.classList.add('hide');
