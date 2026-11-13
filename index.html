@@ -213,7 +213,7 @@ nav button:active span{transform:scale(.85)}
 .bud{padding:6px 12px}.bcont{gap:4px}
 .angry-ico{width:38px;height:38px;font-size:1.7rem}
 .dwrap{width:clamp(96px,min(17vh,40vw),150px);width:clamp(96px,min(17dvh,40vw),150px)}
-.bw{height:clamp(60px,calc(7vh + 16px),100px);height:clamp(60px,calc(7dvh + 16px),100px)}
+.bw{height:clamp(72px,calc(10vh + 16px),130px);height:clamp(72px,calc(10dvh + 16px),130px)}
 .tip{margin-top:6px;padding:4px 10px}
 @media (max-height:700px){.tip{display:none}.st span{display:none}.brand img{width:36px;height:36px}.brand h1{font-size:1.15rem}}
   </style>
@@ -227,7 +227,7 @@ nav button:active span{transform:scale(.85)}
       <div class="card bud" id="bud"></div>
       <div class="stats" id="stats"></div>
       <div class="card grow dn"><div class="dwrap"><svg viewBox="0 0 42 42" id="donut"></svg><div class="center"><small>รวมเดือนนี้</small><b id="total"></b></div></div><div id="legend"></div></div>
-      <div class="card grow"><h2>7 วันล่าสุด 📊 <small class="bnote">เส้นประส้ม = งบวันละ ฿250</small></h2><div class="plot" id="bars"></div><p class="tip" id="tip"></p></div>
+      <div class="card grow"><h2>7 วันล่าสุด 📊 <small class="bnote">เส้นประส้ม = งบวันละ ฿250</small></h2><div class="plot" id="bars"></div></div>
     </section>
     <section id="p-add" class="pg hide">
       <form id="expense" class="card">
@@ -413,8 +413,6 @@ function render(){
   $('#bars').innerHTML=days.map((d,i)=>{ const s=sums[i], top=max>0&&s===max, dow=new Date(d+'T00:00:00').getDay();
     const sc=Math.max(max,BUDGET_DAY), h=Math.max(s/sc*100,s?6:2);
     return `<div class="col${i===6?' today':''}" data-d="${d}" role="button" tabindex="0" aria-label="ดูรายการวันที่ ${+d.slice(8)}"><div class="bw"><div class="bcol" style="--i:${i};height:${h}%"><div class="val${s>BUDGET_DAY?' over':''}">${s?'฿'+short(s):''}</div><div class="bar" style="--c:${DAY_COLORS[dow]};--i:${i}"></div></div><div class="bl" style="bottom:calc((100% - 16px)*${(BUDGET_DAY/sc).toFixed(4)})"></div></div><div class="d">${DAYS[dow]}</div></div>`; }).join('');
-  const ti=sums.indexOf(max);
-  $('#tip').textContent=max>0?`🏆 วัน${DAYS_FULL[new Date(days[ti]+'T00:00:00').getDay()]}ที่ ${+days[ti].slice(8)} ใช้เยอะสุด ${baht(max)}`:'7 วันนี้ยังไม่มีรายจ่าย';
   renderRecent(all);
 }
 function renderBudget(all,total){
