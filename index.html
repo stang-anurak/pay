@@ -333,6 +333,13 @@ const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{retur
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const ymd=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const icoOf=c=>CATS[c]||['✨','#f2d36b','other'];
+/* ไอคอนของรายการ: ใช้อิโมจิตามรายละเอียดที่เลือก ถ้าไม่ตรงตัวเลือกค่อยใช้ของหมวดหมู่ */
+function rowIco(r){
+  const cat=icoOf(r.category), base=OPTS[cat[2]]||[];
+  let o=null; for(const p of String(r.description||'').split(', ')){ o=base.find(x=>x.t===p.trim()); if(o) break; }
+  const inner=o?ic('icons/opt/'+o.k+'.png',o.e):ic('icons/cat/'+cat[2]+'.png',cat[0]);
+  return `<div class="ico" style="background:${cat[1]}55">${inner}</div>`;
+}
 const form=$('#expense'), status=$('#status');
 let user=null, rows=[], descs={}, monthOff=0, flushing=false;
 const uk=b=>user==='ai'?b+'-ai':b;
@@ -447,7 +454,7 @@ function renderStats(all,m,key,total,ents){
 function renderRecent(all){
   all=all||allRows(); const box=$('#recent');
   const rec=[...all].reverse().sort((a,b)=>b.date.localeCompare(a.date)||-byTime(a,b)).slice(0,100);
-  box.innerHTML=rec.length?rec.map(r=>`<div class="rc" data-id="${esc(r.id)}"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}${hm(r)?' · '+hm(r)+' น.':''}</small></div><div class="a">${baht(r.amount)}</div><div class="act"><button type="button" data-act="edit" aria-label="แก้ไข">✏️</button><button type="button" data-act="del" aria-label="ลบ">🗑️</button></div></div>`).join(''):empty('ยังไม่มีรายการ');
+  box.innerHTML=rec.length?rec.map(r=>`<div class="rc" data-id="${esc(r.id)}">${rowIco(r)}<div class="n">${esc(r.description||r.category)}<small>${esc(r.category)} · ${r.date.slice(8)}/${r.date.slice(5,7)}${hm(r)?' · '+hm(r)+' น.':''}</small></div><div class="a">${baht(r.amount)}</div><div class="act"><button type="button" data-act="edit" aria-label="แก้ไข">✏️</button><button type="button" data-act="del" aria-label="ลบ">🗑️</button></div></div>`).join(''):empty('ยังไม่มีรายการ');
 }
 $('#prev').onclick=()=>{monthOff--;render();}; $('#next').onclick=()=>{monthOff++;render();};
 
@@ -539,7 +546,7 @@ function openDay(d){
   $('#dayTitle').textContent=(isToday?'วันนี้ · ':'')+dt.toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'});
   const total=list.reduce((s,r)=>s+r.amount,0);
   $('#dayTotal').textContent=list.length?`รวม ${baht(total)} · ${list.length} รายการ`:'';
-  $('#dayList').innerHTML=list.length?list.map(r=>`<div class="rc"><div class="ico" style="background:${icoOf(r.category)[1]}55">${ic('icons/cat/'+icoOf(r.category)[2]+'.png',icoOf(r.category)[0])}</div><div class="n">${esc(r.description||r.category)}<small>${hm(r)?hm(r)+' น. · ':''}${esc(r.category)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join(''):empty(isToday?'วันนี้ยังไม่มีรายจ่าย':'วันนี้ไม่มีรายจ่าย');
+  $('#dayList').innerHTML=list.length?list.map(r=>`<div class="rc">${rowIco(r)}<div class="n">${esc(r.description||r.category)}<small>${hm(r)?hm(r)+' น. · ':''}${esc(r.category)}</small></div><div class="a">${baht(r.amount)}</div></div>`).join(''):empty(isToday?'วันนี้ยังไม่มีรายจ่าย':'วันนี้ไม่มีรายจ่าย');
   dayModal.classList.remove('hide');
 }
 const closeDay=()=>dayModal.classList.add('hide');
