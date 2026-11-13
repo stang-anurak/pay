@@ -463,8 +463,7 @@ function renderChips(){
 $('#chips').onclick=e=>{ const b=e.target.closest('button'); if(!b) return;
   const el=form.elements.description, cur=el.value.trim(), t=b.dataset.t;
   const names=new Set(chipList(form.elements.category.value).map(o=>o.t));
-  if(!cur||names.has(cur)) el.value=t; else if(!cur.split(', ').includes(t)) el.value=cur+', '+t;
-  el.focus(); };
+  if(!cur||names.has(cur)) el.value=t; else if(!cur.split(', ').includes(t)) el.value=cur+', '+t; };
 $('#cats').addEventListener('change',renderChips);
 form.elements.date.value=ymd(new Date());
 form.addEventListener('submit',e=>{
